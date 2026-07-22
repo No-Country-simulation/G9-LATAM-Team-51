@@ -1,0 +1,5 @@
+modelo,cv_f1_macro_promedio,cv_f1_macro_desv,cv_accuracy_promedio,mejores_parametros
+Regresión Logística,0.9554069794381445,0.025643629219995915,0.9614393939393938,"{""model__C"": 10.0, ""model__class_weight"": null}"
+Random Forest,0.9453831732189532,0.014091824012248594,0.9501584894355979,"{""model__class_weight"": ""balanced"", ""model__max_depth"": 10, ""model__max_features"": ""sqrt"", ""model__min_samples_leaf"": 1, ""model__n_estimators"": 300}"
+Árbol de Decisión,0.9162297581929337,0.03659294360491632,0.9300584856910159,"{""model__class_weight"": ""balanced"", ""model__criterion"": ""entropy"", ""model__max_depth"": 8, ""model__min_samples_leaf"": 4}"
+Modelo Base,0.10760156288509051,0.024495691770221956,0.19473036668819801,{}

@@ -6,7 +6,8 @@
 ```
 G9-LATAM-Team-51/
 ├── docs/
-│   └── category_definition.md       # especificación metodológica ideal-relative-v1
+│   ├── category_definition.md       # especificación metodológica ideal-relative-v1
+│   └── model_training.md            # entrenamiento, evaluación y resultados
 ├── data/processed/
 │   ├── ideal_monthly_features.csv               # 555×13, hogar-mes elegibles sin etiquetar (sin auditoría)
 │   ├── ideal_monthly_features_labeled.csv       # 555×22, canónico (CSV)
@@ -20,7 +21,11 @@ G9-LATAM-Team-51/
     ├── 02_eda_ideal.py                     # fuente del notebook 02 (Jupytext percent)
     ├── 02_eda_ideal.ipynb                  # notebook 02: EDA y análisis de patrones
     ├── 01_limpieza_ideal_previo.ipynb      # anexo legado (análisis previo)
-    └── 02_eda_ideal_previo.ipynb            # anexo legado (análisis previo)
+    ├── 02_eda_ideal_previo.ipynb            # anexo legado (análisis previo)
+    ├── 03_entrenamiento_evaluacion.py       # fuente reproducible del entrenamiento
+    └── 03_entrenamiento_evaluacion.ipynb    # notebook de entrenamiento y evaluación
+├── reports/                                 # métricas, matrices y gráficos del modelo
+└── requirements-model.txt                   # dependencias del entrenamiento
 ```
 
 ## Cómo reproducir
@@ -47,7 +52,7 @@ Python          3.10.0
 numpy           2.2.6
 pandas          2.3.3
 scipy           1.15.3
-scikit-learn    1.7.2 (solo para el split, no para entrenar)
+scikit-learn    1.7.2
 jupytext        1.19.4
 pyarrow         (para parquet)
 matplotlib      (para EDA)
@@ -61,7 +66,7 @@ relativas** construidas a partir de patrones del dataset IDEAL (Edimburgo,
 con ratings A–G, **no son aptas para facturación**, y no son directamente
 generalizables a viviendas latinoamericanas sin validación externa previa.
 
-Ver `docs/category_definition.md`para la advertencia completa.
+Ver `docs/category_definition.md` para la advertencia completa.
 
 ## Contribución de cada integrante
 
@@ -69,10 +74,12 @@ Ver `docs/category_definition.md`para la advertencia completa.
 | --- | --- | --- |
 | `01_limpieza_ideal_previo.ipynb`, `02_eda_ideal_previo.ipynb`, `..._DIARIO_PRE_PARITY_DEPRECATED.parquet` | Análisis previo | Antecedente exploratorio conservado |
 | `01_limpieza_ideal.*`, `02_eda_ideal.*`, `docs/category_definition.md`, `data/processed/ideal_monthly_features*`, `ideal_monthly_audit.parquet`, `label_metadata.json` | Esta entrega | Continuación metodológica |
+| `03_entrenamiento_evaluacion.*`, `docs/model_training.md`, `reports/*`, `requirements-model.txt` | Tomás Maldonado (TM) | Entrenamiento y evaluación completados |
 
-## Entrenamiento, API y OCI (fuera de este repositorio por ahora)
+## Entrenamiento, API y OCI
 
-- **Entrenamiento de modelos** y **serialización**
+- **Entrenamiento y evaluación:** completados. Ver `docs/model_training.md`.
+- **Serialización:** delegada al equipo de Backend por acuerdo del equipo.
 - **API REST** y **backend Java/Spring Boot** son responsabilidad del equipo de Backend.
 - **OCI** es responsabilidad del equipo de DevOps.
 - Ver `docs/category_definition.md` sección 14 para el contrato del dataset que recibe el equipo de entrenamiento.
