@@ -25,6 +25,9 @@ G9-LATAM-Team-51/
     ├── 03_entrenamiento_evaluacion.py       # fuente reproducible del entrenamiento
     └── 03_entrenamiento_evaluacion.ipynb    # notebook de entrenamiento y evaluación
 ├── reports/                                 # métricas, matrices y gráficos del modelo
+├── models/                                  # ONNX, joblib, contrato y checksums
+├── scripts/
+│   └── export_model_artifacts.py            # exportación y prueba Python↔ONNX
 └── requirements-model.txt                   # dependencias del entrenamiento
 ```
 
@@ -74,12 +77,13 @@ Ver `docs/category_definition.md` para la advertencia completa.
 | --- | --- | --- |
 | `01_limpieza_ideal_previo.ipynb`, `02_eda_ideal_previo.ipynb`, `..._DIARIO_PRE_PARITY_DEPRECATED.parquet` | Análisis previo | Antecedente exploratorio conservado |
 | `01_limpieza_ideal.*`, `02_eda_ideal.*`, `docs/category_definition.md`, `data/processed/ideal_monthly_features*`, `ideal_monthly_audit.parquet`, `label_metadata.json` | Esta entrega | Continuación metodológica |
-| `03_entrenamiento_evaluacion.*`, `docs/model_training.md`, `reports/*`, `requirements-model.txt` | Tomás Maldonado (TM) | Entrenamiento y evaluación completados |
+| `03_entrenamiento_evaluacion.*`, `scripts/export_model_artifacts.py`, `models/*`, `docs/model_training.md`, `reports/*`, `requirements-model.txt` | Tomás Maldonado (TM) | Entrenamiento, evaluación y serialización completados |
 
 ## Entrenamiento, API y OCI
 
 - **Entrenamiento y evaluación:** completados. Ver `docs/model_training.md`.
-- **Serialización:** delegada al equipo de Backend por acuerdo del equipo.
+- **Serialización joblib/ONNX y prueba de paridad:** completadas por Datos.
+- **Consumo del ONNX desde Java:** responsabilidad del equipo de Backend.
 - **API REST** y **backend Java/Spring Boot** son responsabilidad del equipo de Backend.
 - **OCI** es responsabilidad del equipo de DevOps.
 - Ver `docs/category_definition.md` sección 14 para el contrato del dataset que recibe el equipo de entrenamiento.

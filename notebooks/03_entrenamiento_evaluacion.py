@@ -333,10 +333,14 @@ test_metrics = {
     "best_params": winner_search.best_params_,
     "feature_columns": FEATURE_COLUMNS,
     "target_column": TARGET_COLUMN,
-    "class_order": CLASS_ORDER,
+    "report_class_order": CLASS_ORDER,
+    "probability_class_order": best_model.classes_.tolist(),
     "random_state": RANDOM_STATE,
     "sklearn_version": sklearn.__version__,
-    "serialization_scope": "Delegado al equipo de Backend; no incluido en esta entrega.",
+    "serialization_scope": (
+        "Datos exporta y valida joblib/ONNX con "
+        "scripts/export_model_artifacts.py; Backend integra ONNX en Java."
+    ),
 }
 
 with (REPORTS_DIR / "final_test_metrics.json").open("w", encoding="utf-8") as file:
@@ -454,5 +458,6 @@ display(examples_output)
 # - El conjunto de prueba permaneció aislado hasta elegir el modelo ganador.
 # - Las cinco variables coinciden con el contrato del endpoint.
 # - Las categorías son pseudoetiquetas relativas, no certificaciones oficiales.
-# - La serialización e integración con Java/OCI quedan delegadas al equipo de
-#   Back-End, según la división de responsabilidades acordada.
+# - Datos exporta y valida el modelo en joblib/ONNX mediante
+#   `scripts/export_model_artifacts.py`.
+# - Back-End carga el ONNX desde Java y DevOps gestiona su despliegue en OCI.

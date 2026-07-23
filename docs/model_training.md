@@ -149,6 +149,13 @@ correcta junto con la probabilidad máxima. Los casos se conservan en
 - `reports/feature_importance.csv`
 - `reports/feature_importance.png`
 - `reports/prediction_examples.csv`
+- `scripts/export_model_artifacts.py`
+- `models/energy_efficiency_pipeline_v1.joblib`
+- `models/energy_efficiency_classifier_v1.onnx`
+- `models/model_contract_v1.json`
+- `models/SHA256SUMS.txt`
+- `reports/onnx_parity_report.json`
+- `reports/onnx_prediction_examples.json`
 - `requirements-model.txt`
 
 ## Reproducción
@@ -169,13 +176,52 @@ py -m venv .venv
 .\.venv\Scripts\python.exe notebooks\03_entrenamiento_evaluacion.py
 ```
 
-## Alcance de serialización
+## Serialización y contrato de inferencia
 
-Por acuerdo del equipo, esta entrega no incluye `.joblib`, `.onnx` ni cambios
-en la API. La serialización, la integración con Java/Spring Boot y el despliegue
-en OCI quedan bajo responsabilidad del equipo de Back-End/DevOps. El notebook
-deja el pipeline seleccionado disponible como `best_model` al finalizar la
-ejecución.
+Datos entrega dos representaciones del modelo:
+
+- `energy_efficiency_pipeline_v1.joblib` conserva el pipeline Python completo,
+  incluidos imputadores, transformaciones y clasificador. Sirve para auditoría
+  o reexportación en un entorno Python con las mismas versiones. No debe cargarse
+  desde fuentes no confiables y no es un formato consumible por Java.
+- `energy_efficiency_classifier_v1.onnx` contiene el preprocesamiento efectivo
+  y la Regresión Logística para inferencia portable desde Java. Es el artefacto
+  que debe consumir Back-End con ONNX Runtime.
+
+La API exige las cinco entradas no nulas. Por compatibilidad con ONNX:
+
+- `uso_horario_pico` se envía como `INT64`: `false=0`, `true=1`.
+- Los imputadores, que no tienen efecto sobre entradas válidas, no están en el
+  grafo ONNX. El resto del preprocesamiento sí forma parte del modelo.
+
+La prueba de paridad comparó las 555 filas canónicas:
+
+| Validación | Resultado |
+| --- | ---: |
+| Etiquetas Python = ONNX | 555 / 555 |
+| Tasa de coincidencia | 1.0000 |
+| Diferencia máxima de probabilidades | 2.22 × 10⁻¹⁶ |
+| Accuracy test ONNX | 0.9435 |
+| F1 macro test ONNX | 0.9442 |
+
+El orden del tensor de probabilidades es `Eficiente`, `Ineficiente`,
+`Moderado`. Este orden es distinto del orden visual usado en la matriz de
+confusión; Back-End debe leerlo desde `models/model_contract_v1.json` y no
+suponerlo.
+
+El contrato técnico, los hashes SHA-256 y tres casos de aceptación están en
+`models/model_contract_v1.json`, `models/SHA256SUMS.txt` y
+`reports/onnx_prediction_examples.json`. La guía de integración está en
+`docs/backend_onnx_handoff.md`.
+
+La integración con Java/Spring Boot corresponde a Back-End y el despliegue en
+OCI corresponde a DevOps.
+
+Para regenerar y volver a validar todos los artefactos:
+
+```bash
+python scripts/export_model_artifacts.py
+```
 
 ## Limitaciones
 

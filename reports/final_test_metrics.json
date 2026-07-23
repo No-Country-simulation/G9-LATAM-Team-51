@@ -22,12 +22,17 @@
     "horas_alto_consumo"
   ],
   "target_column": "categoria",
-  "class_order": [
+  "report_class_order": [
     "Eficiente",
     "Moderado",
     "Ineficiente"
   ],
+  "probability_class_order": [
+    "Eficiente",
+    "Ineficiente",
+    "Moderado"
+  ],
   "random_state": 42,
   "sklearn_version": "1.7.2",
-  "serialization_scope": "Delegado al equipo de Backend; no incluido en esta entrega."
+  "serialization_scope": "Datos exporta y valida joblib/ONNX con scripts/export_model_artifacts.py; Backend integra ONNX en Java."
 }
