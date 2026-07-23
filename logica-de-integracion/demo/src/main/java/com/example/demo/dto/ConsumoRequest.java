@@ -1,10 +1,21 @@
 package com.example.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ConsumoRequest {
+    @JsonProperty("consumo_kwh")
     private Double consumoKwh;
+
+    @JsonProperty("uso_horario_pico")
     private Boolean usoHorarioPico;
+
+    @JsonProperty("cantidad_equipos")
     private Integer cantidadEquipos;
+
+    @JsonProperty("tipo_inmueble")
     private String tipoInmueble;
+
+    @JsonProperty("horas_alto_consumo")
     private Integer horasAltoConsumo;
 
     public Double getConsumoKwh() {

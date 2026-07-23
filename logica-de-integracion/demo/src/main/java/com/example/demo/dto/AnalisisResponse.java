@@ -1,11 +1,19 @@
 package com.example.demo.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 public class AnalisisResponse {
+    @JsonProperty("categoria")
     private String categoria;
+
+    @JsonProperty("probabilidad")
     private Double probabilidad;
+
+    @JsonProperty("recomendaciones")
     private List<String> recomendaciones;
+
+    @JsonProperty("costo_estimado_mensual")
     private Double costoEstimadoMensual;
 
     public String getCategoria() {
@@ -38,9 +46,6 @@ public class AnalisisResponse {
 
     public void setCostoEstimadoMensual(Double costoEstimadoMensual) {
         this.costoEstimadoMensual = costoEstimadoMensual;
-    }
-
-    public AnalisisResponse() {
     }
 
     public AnalisisResponse(String categoria, Double probabilidad, List<String> recomendaciones, Double costoEstimadoMensual) {
