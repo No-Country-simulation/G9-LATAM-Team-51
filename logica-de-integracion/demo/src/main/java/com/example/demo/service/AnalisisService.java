@@ -5,6 +5,7 @@ import com.example.demo.dto.ConsumoRequest;
 import org.springframework.stereotype.Service;
 import java.util.Arrays;
 
+@Service
 public class AnalisisService {
     public AnalisisResponse procesarConsumo(ConsumoRequest request) {
 
