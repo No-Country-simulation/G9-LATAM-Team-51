@@ -1,0 +1,87 @@
+{
+  "status": "PASS",
+  "rows_compared": 555,
+  "test_rows_compared": 124,
+  "label_matches": 555,
+  "label_match_rate": 1.0,
+  "max_absolute_probability_difference": 1.1102230246251565e-16,
+  "tolerance": 1e-10,
+  "python_to_export_source_max_probability_difference": 0.0,
+  "test_accuracy_onnx": 0.9435483870967742,
+  "test_f1_macro_onnx": 0.9441585632874531,
+  "probability_class_order": [
+    "Eficiente",
+    "Ineficiente",
+    "Moderado"
+  ],
+  "onnx_inputs": [
+    {
+      "name": "consumo_kwh",
+      "type": "tensor(double)",
+      "shape": [
+        null,
+        1
+      ]
+    },
+    {
+      "name": "uso_horario_pico",
+      "type": "tensor(int64)",
+      "shape": [
+        null,
+        1
+      ]
+    },
+    {
+      "name": "cantidad_equipos",
+      "type": "tensor(int64)",
+      "shape": [
+        null,
+        1
+      ]
+    },
+    {
+      "name": "tipo_inmueble",
+      "type": "tensor(string)",
+      "shape": [
+        null,
+        1
+      ]
+    },
+    {
+      "name": "horas_alto_consumo",
+      "type": "tensor(int64)",
+      "shape": [
+        null,
+        1
+      ]
+    }
+  ],
+  "onnx_outputs": [
+    {
+      "name": "label",
+      "type": "tensor(string)",
+      "shape": [
+        null
+      ]
+    },
+    {
+      "name": "probabilities",
+      "type": "tensor(double)",
+      "shape": [
+        null,
+        3
+      ]
+    }
+  ],
+  "environment": {
+    "python": "3.12.7",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "scikit_learn": "1.7.2",
+    "skl2onnx": "1.20.0",
+    "onnx": "1.19.0",
+    "onnxruntime": "1.23.2",
+    "joblib": "1.5.2"
+  }
+}
