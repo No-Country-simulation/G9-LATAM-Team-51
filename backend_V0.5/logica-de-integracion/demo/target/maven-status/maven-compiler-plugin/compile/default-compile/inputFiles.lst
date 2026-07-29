@@ -1,0 +1,9 @@
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\controller\AnalisisController.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\DemoApplication.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\dto\AnalisisResponse.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\dto\ConsumoRequest.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\dto\CsvAnalysisResponse.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\exception\ApiExceptionHandler.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\exception\BadRequestException.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\exception\ErrorResponse.java
+C:\Users\Gerald\Downloads\G9-LATAM-Team-51-backend\logica-de-integracion\demo\src\main\java\com\example\demo\service\OnnxInferenceService.java

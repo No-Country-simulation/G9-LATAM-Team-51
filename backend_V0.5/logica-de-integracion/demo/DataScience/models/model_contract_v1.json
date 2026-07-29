@@ -1,0 +1,125 @@
+{
+  "model_name": "EnergiAI Energy Efficiency Classifier",
+  "model_version": "1.0.0",
+  "label_methodology": "ideal-relative-v1",
+  "onnx_opset": 17,
+  "artifacts": {
+    "java_inference": {
+      "path": "models/energy_efficiency_classifier_v1.onnx",
+      "sha256": "2bd6bd1bd742501b2c9d60ea1f3724f75bd6499f77fe2a29de4fff1759e251c2"
+    },
+    "python_reproducibility": {
+      "path": "models/energy_efficiency_pipeline_v1.joblib",
+      "sha256": "2d4b309c184301d7666b63e06831d3639aa0e7b99208fa2be2b12a9c2f04141c",
+      "trusted_source_only": true
+    }
+  },
+  "inputs": [
+    {
+      "name": "consumo_kwh",
+      "onnx_type": "DOUBLE",
+      "shape": [
+        "batch",
+        1
+      ],
+      "api_field": "consumoKwh",
+      "validation": "required; > 0"
+    },
+    {
+      "name": "uso_horario_pico",
+      "onnx_type": "INT64",
+      "shape": [
+        "batch",
+        1
+      ],
+      "api_field": "usoHorarioPico",
+      "mapping": {
+        "false": 0,
+        "true": 1
+      },
+      "validation": "required"
+    },
+    {
+      "name": "cantidad_equipos",
+      "onnx_type": "INT64",
+      "shape": [
+        "batch",
+        1
+      ],
+      "api_field": "cantidadEquipos",
+      "validation": "required; >= 1"
+    },
+    {
+      "name": "tipo_inmueble",
+      "onnx_type": "STRING",
+      "shape": [
+        "batch",
+        1
+      ],
+      "api_field": "tipoInmueble",
+      "allowed_values": [
+        "Casa",
+        "Departamento"
+      ],
+      "validation": "required; case-sensitive"
+    },
+    {
+      "name": "horas_alto_consumo",
+      "onnx_type": "INT64",
+      "shape": [
+        "batch",
+        1
+      ],
+      "api_field": "horasAltoConsumo",
+      "validation": "required; integer between 0 and 24"
+    }
+  ],
+  "outputs": [
+    {
+      "name": "label",
+      "onnx_type": "STRING",
+      "shape": [
+        "batch"
+      ],
+      "meaning": "Categoría predicha"
+    },
+    {
+      "name": "probabilities",
+      "onnx_type": "DOUBLE",
+      "shape": [
+        "batch",
+        3
+      ],
+      "class_order": [
+        "Eficiente",
+        "Ineficiente",
+        "Moderado"
+      ]
+    }
+  ],
+  "class_order_warning": "El orden tensorial es lexicográfico y no coincide con el orden visual de los reportes. Back-End debe usar exactamente outputs[1].class_order.",
+  "training": {
+    "algorithm": "LogisticRegression",
+    "parameters": {
+      "C": 10.0,
+      "class_weight": null,
+      "max_iter": 3000,
+      "random_state": 42
+    },
+    "train_rows": 431,
+    "train_homes": 113,
+    "test_rows": 124,
+    "test_homes": 38,
+    "test_accuracy": 0.9435483870967742,
+    "test_f1_macro": 0.9441585632874531
+  },
+  "runtime": {
+    "python_onnxruntime": "1.23.2",
+    "recommended_java_dependency": "com.microsoft.onnxruntime:onnxruntime:1.27.0"
+  },
+  "limitations": [
+    "Las cinco entradas son obligatorias y no pueden ser nulas.",
+    "Las categorías son pseudoetiquetas relativas, no certificaciones.",
+    "La generalización a LATAM requiere validación externa."
+  ]
+}
