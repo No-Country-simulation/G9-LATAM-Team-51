@@ -16,7 +16,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-
 @RestController
 @RequestMapping("/api")
 public class AnalisisController {
@@ -100,17 +99,15 @@ public class AnalisisController {
         }
 
         try {
-            return new ConsumoRequest(
-                    Double.valueOf(values[0].trim()),
-                    Boolean.valueOf(values[1].trim()),
-                    Integer.valueOf(values[2].trim()),
-                    values[3].trim(),
-                    Integer.valueOf(values[4].trim())
-            );
+            ConsumoRequest request = new ConsumoRequest();
+            request.setConsumoKwh(Double.valueOf(values[0].trim()));
+            request.setUsoHorarioPico(Boolean.valueOf(values[1].trim()));
+            request.setCantidadEquipos(Integer.valueOf(values[2].trim()));
+            request.setTipoInmueble(values[3].trim());
+            request.setHorasAltoConsumo(Integer.valueOf(values[4].trim()));
+            return request;
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("Error de formato en la fila " + row + ": " + ex.getMessage(), ex);
         }
     }
-
-
 }

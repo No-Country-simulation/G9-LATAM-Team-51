@@ -10,8 +10,6 @@ import ai.onnxruntime.OrtSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,15 +46,14 @@ public class OnnxInferenceService implements AutoCloseable {
     public AnalisisResponse predict(ConsumoRequest request) {
         validateRequest(request);
 
-        double costoCalculado = request.consumoKwh() * 0.75;
-        double costoEstimadoMensual = redondear(costoCalculado, 2);
+        double costoEstimadoMensual = request.getConsumoKwh() * 0.75;
 
         try (
-                OnnxTensor consumoTensor = OnnxTensor.createTensor(environment, new double[][]{{request.consumoKwh()}});
-                OnnxTensor usoHorarioPicoTensor = OnnxTensor.createTensor(environment, new long[][]{{request.usoHorarioPico() ? 1L : 0L}});
-                OnnxTensor cantidadEquiposTensor = OnnxTensor.createTensor(environment, new long[][]{{request.cantidadEquipos().longValue()}});
-                OnnxTensor tipoInmuebleTensor = OnnxTensor.createTensor(environment, new String[][]{{request.tipoInmueble()}});
-                OnnxTensor horasAltoConsumoTensor = OnnxTensor.createTensor(environment, new long[][]{{request.horasAltoConsumo().longValue()}})
+                OnnxTensor consumoTensor = OnnxTensor.createTensor(environment, new double[][]{{request.getConsumoKwh()}});
+                OnnxTensor usoHorarioPicoTensor = OnnxTensor.createTensor(environment, new long[][]{{request.getUsoHorarioPico() ? 1L : 0L}});
+                OnnxTensor cantidadEquiposTensor = OnnxTensor.createTensor(environment, new long[][]{{request.getCantidadEquipos().longValue()}});
+                OnnxTensor tipoInmuebleTensor = OnnxTensor.createTensor(environment, new String[][]{{request.getTipoInmueble()}});
+                OnnxTensor horasAltoConsumoTensor = OnnxTensor.createTensor(environment, new long[][]{{request.getHorasAltoConsumo().longValue()}})
         ) {
             Map<String, OnnxTensor> inputs = Map.of(
                     "consumo_kwh", consumoTensor,
@@ -83,10 +80,10 @@ public class OnnxInferenceService implements AutoCloseable {
                 Map<String, Double> probabilidadesPorClase = new LinkedHashMap<>();
                 for (String clase : CLASS_ORDER) {
                     int index = CLASS_INDEX.get(clase);
-                    probabilidadesPorClase.put(clase, redondear(probabilities[0][index], 4));
+                    probabilidadesPorClase.put(clase, probabilities[0][index]);
                 }
 
-                double probabilidad = redondear(probabilities[0][classIndex], 4);
+                double probabilidad = probabilities[0][classIndex];
                 List<String> recomendaciones = generarRecomendaciones(categoria);
 
                 return new AnalisisResponse(categoria, probabilidad, probabilidadesPorClase, recomendaciones, costoEstimadoMensual);
@@ -100,19 +97,19 @@ public class OnnxInferenceService implements AutoCloseable {
         if (request == null) {
             throw new BadRequestException("La petición no puede ser nula.");
         }
-        if (request.consumoKwh() == null || request.consumoKwh() <= 0) {
+        if (request.getConsumoKwh() == null || request.getConsumoKwh() <= 0) {
             throw new BadRequestException("El campo consumoKwh es obligatorio y debe ser mayor a 0.");
         }
-        if (request.usoHorarioPico() == null) {
+        if (request.getUsoHorarioPico() == null) {
             throw new BadRequestException("El campo usoHorarioPico es obligatorio.");
         }
-        if (request.cantidadEquipos() == null || request.cantidadEquipos() < 1) {
+        if (request.getCantidadEquipos() == null || request.getCantidadEquipos() < 1) {
             throw new BadRequestException("El campo cantidadEquipos es obligatorio y debe ser al menos 1.");
         }
-        if (request.tipoInmueble() == null || !(request.tipoInmueble().equals("Casa") || request.tipoInmueble().equals("Departamento"))) {
+        if (request.getTipoInmueble() == null || !(request.getTipoInmueble().equals("Casa") || request.getTipoInmueble().equals("Departamento"))) {
             throw new BadRequestException("El campo tipoInmueble es obligatorio y debe ser 'Casa' o 'Departamento'.");
         }
-        if (request.horasAltoConsumo() == null || request.horasAltoConsumo() < 0 || request.horasAltoConsumo() > 24) {
+        if (request.getHorasAltoConsumo() == null || request.getHorasAltoConsumo() < 0 || request.getHorasAltoConsumo() > 24) {
             throw new BadRequestException("El campo horasAltoConsumo es obligatorio y debe estar entre 0 y 24.");
         }
     }
@@ -140,11 +137,5 @@ public class OnnxInferenceService implements AutoCloseable {
     public void close() throws Exception {
         session.close();
         environment.close();
-    }
-
-    private double redondear(double valor, int decimales){
-        return BigDecimal.valueOf(valor)
-                .setScale(decimales, RoundingMode.HALF_UP)
-                .doubleValue();
     }
 }
