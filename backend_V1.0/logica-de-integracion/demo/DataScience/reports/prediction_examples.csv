@@ -1,4 +1,0 @@
-consumo_kwh,uso_horario_pico,cantidad_equipos,tipo_inmueble,horas_alto_consumo,categoria,categoria_predicha,probabilidad
-115.546342,True,6,Departamento,1,Eficiente,Eficiente,0.96962696577322
-346.91285,True,12,Casa,7,Ineficiente,Ineficiente,0.9993745340200155
-291.77772,False,12,Casa,5,Moderado,Moderado,0.9485325593545467
