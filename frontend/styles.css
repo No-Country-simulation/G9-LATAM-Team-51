@@ -1,0 +1,68 @@
+/* EnergiAI · Opción de diseño 1 "Eco Fresh" — CSS independiente */
+:root{
+  --background:oklch(0.975 0.008 140);
+  --foreground:oklch(0.129 0.042 264.695);
+  --muted-foreground:oklch(0.554 0.046 257.417);
+  --border:oklch(0.929 0.013 255.508);
+  --accent:oklch(0.968 0.007 247.896);
+  --destructive:oklch(0.577 0.245 27.325);
+  --destructive-foreground:oklch(0.984 0.003 247.858);
+  --surface:oklch(1 0 0);
+  --surface-foreground:oklch(0.28 0.02 260);
+  --brand:oklch(0.72 0.17 155);
+  --brand-foreground:oklch(0.22 0.05 160);
+  --accent2:oklch(0.82 0.16 85);
+  --accent2-foreground:oklch(0.3 0.06 80);
+  --grad-brand:linear-gradient(135deg,oklch(0.7 0.16 155),oklch(0.86 0.19 130));
+  --grad-accent2:linear-gradient(135deg,oklch(0.78 0.16 70),oklch(0.88 0.17 95));
+  --shadow-soft:0 18px 40px -24px oklch(0.3 0.05 160 / .45);
+  --field:oklch(1 0 0 / .45);
+  --card-radius:1.25rem;
+}
+*{box-sizing:border-box;border-color:var(--border)}
+body{margin:0;background:var(--background);color:var(--foreground);
+  font-family:"Poppins",ui-sans-serif,system-ui,sans-serif}
+.wrap{max-width:72rem;margin:0 auto;padding:1.5rem 1rem}
+@media(min-width:640px){.wrap{padding:2.5rem 1.5rem}}
+header{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.brandbox{display:flex;align-items:center;gap:.75rem;min-width:0}
+.brandbox img{width:2.75rem;height:2.75rem}
+h1{font-size:1.5rem;margin:0}
+.sub{font-size:.8rem;color:var(--muted-foreground);margin:0}
+.pill{border-radius:999px;background:var(--brand);color:var(--brand-foreground);
+  padding:.4rem .8rem;font-size:.75rem;font-weight:500}
+.ops{display:grid;gap:1.25rem;margin-top:2rem}
+@media(min-width:1024px){.ops{grid-template-columns:1fr 1fr}}
+.op-card,.op-card-alt,.surface-card{border-radius:var(--card-radius);box-shadow:var(--shadow-soft)}
+.op-card{background-image:var(--grad-brand);color:var(--brand-foreground);padding:2rem}
+.op-card-alt{background-image:var(--grad-accent2);color:var(--accent2-foreground);padding:2rem}
+.surface-card{background:var(--surface);color:var(--surface-foreground);overflow:hidden}
+.grid-form{display:grid;gap:1rem;margin-top:1.25rem}
+@media(min-width:640px){.grid-form.two{grid-template-columns:1fr 1fr}.span2{grid-column:span 2}}
+label{display:grid;gap:.4rem;font-size:.875rem;font-weight:500}
+.field{width:100%;border:1px solid transparent;background:var(--field);color:inherit;font:inherit;
+  padding:.6rem .9rem;border-radius:.7rem;transition:all .25s ease}
+.field:focus{outline:none;border-color:currentColor;background:color-mix(in oklab,var(--field) 60%,white)}
+textarea.field{resize:vertical;min-height:5rem;line-height:1.5}
+button{border:0;border-radius:.75rem;background:var(--surface);color:var(--surface-foreground);
+  padding:.65rem 1.25rem;font-weight:600;font-size:.875rem;cursor:pointer;transition:transform .2s}
+button:hover{transform:translateY(-2px)}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;margin-top:1.5rem}
+.thead{display:none;gap:1rem;border-bottom:1px solid var(--border);padding:.75rem 1.5rem;
+  font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted-foreground);font-weight:600}
+ul{list-style:none;margin:0;padding:0}
+li.row{display:grid;gap:.5rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border)}
+li.row:last-child{border-bottom:0}
+@media(min-width:768px){
+  .thead,li.row{display:grid;grid-template-columns:1.2fr .8fr .8fr .8fr 1.6fr;align-items:center;gap:1rem;padding-inline:1.5rem}
+  .only-mobile{display:none}
+}
+.tag{width:fit-content;border-radius:999px;padding:.25rem .75rem;font-size:.7rem;font-weight:600;text-transform:uppercase}
+.tag.ineficiente{background:var(--destructive);color:var(--destructive-foreground)}
+.tag.moderado{background:var(--accent2);color:var(--accent2-foreground)}
+.tag.eficiente{background:var(--brand);color:var(--brand-foreground)}
+footer{margin-top:2.5rem;border-top:1px solid var(--border);padding-top:1.25rem;
+  font-size:.75rem;color:var(--muted-foreground)}
+
+.err{color:#c0392b;font-size:.75rem;font-weight:400;min-height:0}
+.field[aria-invalid="true"]{border-color:#c0392b}
