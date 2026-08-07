@@ -1,9 +1,0 @@
-com\example\demo\DemoApplication.class
-com\example\demo\dto\AnalisisResponse.class
-com\example\demo\dto\CsvAnalysisResponse.class
-com\example\demo\exception\ErrorResponse.class
-com\example\demo\service\OnnxInferenceService.class
-com\example\demo\controller\AnalisisController.class
-com\example\demo\exception\ApiExceptionHandler.class
-com\example\demo\dto\ConsumoRequest.class
-com\example\demo\exception\BadRequestException.class
