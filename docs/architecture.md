@@ -78,7 +78,7 @@ Sus responsabilidades son:
 
 Tecnologías:
 
-- Java 17
+- Java 25
 - Spring Boot
 - Maven
 - ONNX Runtime Java
@@ -162,22 +162,22 @@ Se devuelve la respuesta al Frontend.
 ```
 EnergiAI/
 
-├── backend_V1.0/
-│   └── logica-de-integracion/
-│
-├── data/
-│
-├── docs/
-│
-├── models/
-│
-├── notebooks/
-│
-├── reports/
-│
-├── scripts/
-│
-└── README.md
+backend_V1.0/
+├── pom.xml
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/example/demo/
+│   │   │       ├── controller/
+│   │   │       ├── dto/
+│   │   │       ├── exception/
+│   │   │       └── service/
+│   │   └── resources/
+│   │       ├── application.properties
+│   │       └── models/
+│   │           └── energy_efficiency_classifier_v1.onnx
+│   └── test/
+└── target/
 ```
 
 ---

@@ -52,11 +52,11 @@ Ejemplo JSON:
 
 ```json
 {
-  "consumoKwh": 245.8,
+  "consumoKwh": 420,
   "usoHorarioPico": true,
-  "cantidadEquipos": 8,
+  "cantidadEquipos": 10,
   "tipoInmueble": "Casa",
-  "horasAltoConsumo": 6
+  "horasAltoConsumo": 8
 }
 ```
 
