@@ -61,6 +61,23 @@ Ejemplo JSON:
 ```
 
 ---
+## Transformación de entradas
+
+El backend recibe los datos mediante `ConsumoRequest` y los transforma
+al formato esperado por ONNX:
+
+| Campo API | Entrada ONNX |
+|-----------|--------------|
+| consumoKwh | consumo_kwh |
+| usoHorarioPico | uso_horario_pico |
+| cantidadEquipos | cantidad_equipos |
+| tipoInmueble | tipo_inmueble |
+| horasAltoConsumo | horas_alto_consumo |
+
+El backend también convierte `usoHorarioPico` de `Boolean` a `0/1`
+antes de ejecutar la inferencia.
+
+---
 
 # Salida del modelo
 
@@ -123,13 +140,14 @@ Ejemplo:
 
 # Validaciones
 
-La API debe validar:
+La API valida antes de ejecutar el modelo:
 
-- consumoKwh > 0
-- cantidadEquipos >= 1
-- horasAltoConsumo entre 0 y 24
-- tipoInmueble ∈ {Casa, Departamento}
-- ningún campo puede ser nulo
+- `consumoKwh` > 0
+- `cantidadEquipos` >= 1
+- `horasAltoConsumo` entre 0 y 24
+- `tipoInmueble` ∈ {Casa, Departamento}
+- `usoHorarioPico` obligatorio
+- los campos requeridos no pueden ser nulos
 
 ---
 
