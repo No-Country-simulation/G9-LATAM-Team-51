@@ -1,3 +1,8 @@
+DEPLOYMENT.md (cómo ejecutar el proyecto localmente y cómo desplegarlo en OCI).
+
+
+
+
 # ⚡ EnergiAI
 
 Sistema inteligente para el análisis de eficiencia energética residencial mediante Inteligencia Artificial.

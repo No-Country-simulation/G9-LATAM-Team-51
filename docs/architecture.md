@@ -1,245 +1,342 @@
-# 🏗 Arquitectura del Sistema
+# Arquitectura del sistema
 
-## Introducción
+## 1. Visión general
 
-EnergiAI está compuesto por tres componentes principales que trabajan de forma integrada:
+El sistema está compuesto por tres partes principales:
 
-- Ciencia de Datos (Machine Learning)
-- Backend (API REST)
-- Frontend (Interfaz de Usuario)
+- **Frontend:** interfaz utilizada por el usuario para ingresar los datos y visualizar el análisis.
+- **Backend:** API REST desarrollada con Spring Boot que recibe las solicitudes, valida los datos y ejecuta el modelo.
+- **Modelo ONNX:** modelo de Machine Learning utilizado por el backend para clasificar el consumo energético.
 
-Cada uno cumple una función específica dentro del flujo de procesamiento de la información.
+El flujo principal es:
+
+```text
+┌──────────────┐
+│    Usuario   │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│   Frontend   │
+│   Interfaz   │
+└──────┬───────┘
+       │ HTTP / JSON
+       ▼
+┌────────────────────────┐
+│       Backend          │
+│      Spring Boot       │
+│                        │
+│  Controller → Service  │
+└───────────┬────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│      Modelo ONNX        │
+│ Clasificación energética│
+└───────────┬─────────────┘
+            │
+            ▼
+┌─────────────────────────┐
+│ Resultado del análisis  │
+│ categoría + probabilidad│
+│ recomendaciones + costo │
+└───────────┬─────────────┘
+            │
+            ▼
+       Frontend / Usuario
+````
 
 ---
 
-# Arquitectura General
+## 2. Componentes
 
-```
-                    Usuario
-                        │
-                        ▼
-                Frontend Web
-                        │
-          HTTP (JSON / CSV)
-                        │
-                        ▼
-             Spring Boot REST API
-                        │
-                        ▼
-             ONNX Runtime (Java)
-                        │
-                        ▼
-      Modelo de Machine Learning (.onnx)
-                        │
-                        ▼
-            Predicción del modelo
-                        │
-                        ▼
-            Respuesta al Frontend
-```
-
----
-
-# Componentes del sistema
-
-## 1. Ciencia de Datos
+### Frontend
 
 Responsable de:
 
-- Preparación y limpieza de datos.
-- Análisis exploratorio.
-- Ingeniería de características.
-- Entrenamiento del modelo.
-- Evaluación del modelo.
-- Exportación del modelo a formato ONNX.
+* Recopilar los datos ingresados por el usuario.
+* Enviar las solicitudes al backend.
+* Mostrar la categoría energética obtenida.
+* Mostrar probabilidades, recomendaciones y costo estimado.
 
-Principales herramientas:
+El frontend consume la API REST del backend.
 
-- Python
-- Pandas
-- NumPy
-- Scikit-Learn
-- ONNX
-- Joblib
+> El frontend se encuentra actualmente en desarrollo/integración y sus cambios todavía pueden evolucionar.
 
 ---
 
-## 2. Backend
+### Backend
 
-El Backend fue desarrollado utilizando Spring Boot.
+El backend está desarrollado con:
 
-Sus responsabilidades son:
+* Java
+* Spring Boot
+* Spring Web MVC
+* ONNX Runtime
 
-- Exponer la API REST.
-- Validar las solicitudes del usuario.
-- Ejecutar el modelo ONNX.
-- Procesar las probabilidades obtenidas.
-- Generar la respuesta final.
+Su estructura principal es:
 
-Tecnologías:
-
-- Java 25
-- Spring Boot
-- Maven
-- ONNX Runtime Java
-
----
-
-## 3. Frontend
-
-El Frontend consume la API REST.
-
-Funciones principales:
-
-- Capturar los datos del usuario.
-- Enviar solicitudes al Backend.
-- Mostrar los resultados.
-- Presentar recomendaciones.
-- Mostrar probabilidades de manera amigable.
-
----
-
-# Flujo de procesamiento
-
-## Paso 1
-
-El usuario ingresa los datos de consumo energético.
-
-↓
-
-## Paso 2
-
-El Frontend envía una petición HTTP al Backend.
-
-↓
-
-## Paso 3
-
-Spring Boot valida todos los datos recibidos.
-
-↓
-
-## Paso 4
-
-El Backend construye los tensores requeridos por ONNX Runtime.
-
-↓
-
-## Paso 5
-
-El modelo realiza la inferencia.
-
-↓
-
-## Paso 6
-
-Se obtiene:
-
-- categoría
-- probabilidades
-
-↓
-
-## Paso 7
-
-El Backend agrega información complementaria.
-
-Ejemplo:
-
-- recomendaciones
-- costo estimado mensual
-
-↓
-
-## Paso 8
-
-Se devuelve la respuesta al Frontend.
-
----
-
-# Estructura del repositorio
-
-```
-EnergiAI/
-
+```text
 backend_V1.0/
-├── pom.xml
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/example/demo/
-│   │   │       ├── controller/
-│   │   │       ├── dto/
-│   │   │       ├── exception/
-│   │   │       └── service/
-│   │   └── resources/
-│   │       ├── application.properties
-│   │       └── models/
-│   │           └── energy_efficiency_classifier_v1.onnx
-│   └── test/
-└── target/
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/example/demo/
+        │       ├── controller/
+        │       ├── dto/
+        │       ├── exception/
+        │       └── service/
+        │
+        └── resources/
+            └── models/
+                └── energy_efficiency_classifier_v1.onnx
 ```
 
----
+### Responsabilidad de cada capa
 
-# Comunicación entre componentes
-
-```
-Frontend
-      │
-      │ JSON
-      ▼
-
-Spring Boot
-
-      │
-
+```text
+Controller
+    │
+    │ recibe HTTP
+    ▼
+DTO
+    │
+    │ representa los datos
+    ▼
+Service
+    │
+    │ valida + prepara entrada
+    ▼
 ONNX Runtime
-
-      │
-
-Modelo IA
-
-      │
-
-Predicción
-
-      │
-
+    │
+    │ ejecuta modelo
+    ▼
+AnalisisResponse
+    │
+    ▼
 Respuesta JSON
-
-      ▼
-
-Frontend
 ```
 
 ---
 
-# Diagrama de responsabilidades
+## 3. Flujo de una predicción
 
-| Componente | Responsabilidad |
-|------------|-----------------|
-| Data Science | Construcción y entrenamiento del modelo |
-| Backend | Integración del modelo y exposición mediante API |
-| Frontend | Interfaz de usuario y visualización de resultados |
+Para una predicción individual:
+
+```text
+1. Usuario ingresa datos
+          ↓
+2. Frontend crea JSON
+          ↓
+3. POST /api/analisis-energetico
+          ↓
+4. AnalisisController recibe la petición
+          ↓
+5. ConsumoRequest representa los datos
+          ↓
+6. OnnxInferenceService valida los valores
+          ↓
+7. Se ejecuta el modelo ONNX
+          ↓
+8. Se obtiene la categoría y probabilidades
+          ↓
+9. Se generan recomendaciones
+          ↓
+10. Se calcula el costo estimado
+          ↓
+11. AnalisisResponse
+          ↓
+12. Frontend muestra el resultado
+```
 
 ---
 
-# Beneficios de la arquitectura
+## 4. Flujo de procesamiento CSV
 
-- Separación clara de responsabilidades.
-- Independencia entre entrenamiento e inferencia.
-- Modelo portable gracias a ONNX.
-- Backend desacoplado del proceso de entrenamiento.
-- Escalabilidad para futuras mejoras.
-- Facilidad para desplegar en diferentes entornos.
+El backend también permite procesar múltiples registros mediante un archivo CSV.
+
+```text
+CSV
+ │
+ ▼
+POST /api/analisis-energetico/csv
+ │
+ ▼
+Validación del encabezado
+ │
+ ▼
+Lectura de registros
+ │
+ ▼
+ConsumoRequest por registro
+ │
+ ▼
+Modelo ONNX
+ │
+ ▼
+AnalisisResponse por registro
+ │
+ ▼
+CsvAnalysisResponse
+```
+
+La respuesta contiene:
+
+* `totalRecords`
+* `results`
+
+Cada elemento de `results` contiene el mismo tipo de información que una predicción individual.
 
 ---
 
-# Futuras mejoras
+## 5. Modelo de Machine Learning
 
-- Autenticación de usuarios.
-- Historial de análisis.
-- Panel de métricas.
-- Nuevos modelos de clasificación.
-- Integración con servicios en la nube.
+El backend utiliza el siguiente modelo:
+
+```text
+energy_efficiency_classifier_v1.onnx
+```
+
+El modelo recibe cinco variables:
+
+| Variable           | Tipo           |
+| ------------------ | -------------- |
+| `consumoKwh`       | número decimal |
+| `usoHorarioPico`   | booleano       |
+| `cantidadEquipos`  | entero         |
+| `tipoInmueble`     | texto          |
+| `horasAltoConsumo` | entero         |
+
+Las categorías posibles son:
+
+```text
+Eficiente
+Ineficiente
+Moderado
+```
+
+El backend obtiene del modelo:
+
+* Categoría predicha.
+* Probabilidad de la categoría.
+* Probabilidades por cada clase.
+
+---
+
+## 6. Respuesta del sistema
+
+El backend transforma la predicción del modelo en una respuesta orientada al usuario.
+
+Conceptualmente:
+
+```text
+Modelo ONNX
+     │
+     ├── categoría
+     ├── probabilidades
+     │
+     ▼
+Backend
+     │
+     ├── recomendaciones
+     ├── costo estimado
+     │
+     ▼
+Respuesta JSON
+     │
+     ▼
+Frontend
+```
+
+Esto permite separar la lógica del modelo de la presentación final al usuario.
+
+---
+
+## 7. Manejo de errores
+
+El backend centraliza los errores mediante `ApiExceptionHandler`.
+
+Los principales casos contemplados son:
+
+* Datos de entrada inválidos.
+* Archivo CSV vacío.
+* Encabezado CSV incorrecto.
+* Formato inválido en los registros.
+* Error durante la ejecución del modelo.
+* Modelo ONNX no disponible o no cargable.
+
+Las respuestas de error utilizan una estructura sencilla:
+
+```json
+{
+  "error": "Bad Request",
+  "message": "Descripción del problema"
+}
+```
+
+---
+
+## 8. Despliegue
+
+El backend actualizado de la rama `backend1.0` ya fue preparado y desplegado en **OCI (Oracle Cloud Infrastructure)**.
+
+La arquitectura de despliegue mantiene el mismo flujo lógico:
+
+```text
+Usuario
+   │
+   ▼
+Frontend
+   │
+   │ HTTP
+   ▼
+Backend desplegado en OCI
+   │
+   ▼
+Modelo ONNX
+   │
+   ▼
+Respuesta
+```
+
+El frontend deberá integrarse con la instancia del backend desplegado para completar el flujo de extremo a extremo.
+
+---
+
+## 9. Principio de separación
+
+La solución mantiene separadas las responsabilidades:
+
+```text
+Frontend
+   → presentación
+
+Backend
+   → API + validación + lógica de integración
+
+Modelo ONNX
+   → predicción
+
+OCI
+   → infraestructura de despliegue
+```
+
+Esta separación facilita que cada componente pueda evolucionar sin modificar innecesariamente los demás.
+
+---
+
+## 10. Estado actual
+
+| Componente                     | Estado                    |
+| ------------------------------ | ------------------------- |
+| Modelo ONNX                    | ✅ Integrado               |
+| Backend Spring Boot            | ✅ Actualizado             |
+| API REST                       | ✅ Implementada            |
+| Endpoint JSON                  | ✅ Implementado            |
+| Endpoint CSV                   | ✅ Implementado            |
+| Manejo de errores              | ✅ Implementado            |
+| Backend en OCI                 | ✅ Desplegado              |
+| Frontend                       | 🔄 En desarrollo          |
+| Integración Frontend + Backend | 🔄 Pendiente de completar |
+
+```
