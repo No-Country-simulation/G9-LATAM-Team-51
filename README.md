@@ -1,8 +1,3 @@
-DEPLOYMENT.md (cómo ejecutar el proyecto localmente y cómo desplegarlo en OCI).
-
-
-
-
 # ⚡ EnergiAI
 
 Sistema inteligente para el análisis de eficiencia energética residencial mediante Inteligencia Artificial.
@@ -11,76 +6,90 @@ Sistema inteligente para el análisis de eficiencia energética residencial medi
 
 ## 📖 Descripción
 
-EnergiAI es un proyecto desarrollado como solución para estimar la categoría de eficiencia energética de una vivienda a partir de información sobre su consumo eléctrico y características generales del inmueble.
+**EnergiAI** analiza información relacionada con el consumo eléctrico y las características de una vivienda para estimar su categoría de eficiencia energética.
 
-El sistema integra un modelo de Machine Learning entrenado en Python y exportado a ONNX para su consumo desde una API REST desarrollada en Spring Boot. Posteriormente, esta API será consumida por una aplicación Frontend para ofrecer una experiencia amigable al usuario final.
+El proyecto integra:
+
+- Un modelo de Machine Learning desarrollado en Python.
+- El modelo exportado a formato **ONNX**.
+- Una API REST desarrollada con **Spring Boot**.
+- **ONNX Runtime** para ejecutar las predicciones desde el backend.
+- Un Frontend destinado a presentar los resultados de forma amigable al usuario.
 
 ---
 
 ## 🎯 Objetivo
 
-Desarrollar una solución de Inteligencia Artificial capaz de analizar patrones de consumo energético residencial y clasificar viviendas en diferentes categorías de eficiencia energética, proporcionando además información útil para apoyar la toma de decisiones relacionadas con el ahorro energético.
+Clasificar viviendas según su nivel de eficiencia energética y proporcionar información adicional que ayude al usuario a comprender su consumo y tomar decisiones orientadas al ahorro energético.
+
+Las categorías utilizadas por el sistema son:
+
+- **Eficiente**
+- **Moderado**
+- **Ineficiente**
 
 ---
 
-# 🏗 Arquitectura del Proyecto
+## 🏗️ Arquitectura general
 
-```
+```text
                  Usuario
-                     │
-                     ▼
+                    │
+                    ▼
               Frontend Web
-                     │
-                     ▼
-          Spring Boot REST API
-                     │
-                     ▼
-             ONNX Runtime Java
-                     │
-                     ▼
-      Modelo de Machine Learning
-                     │
-                     ▼
-        Predicción de categoría
-```
+                    │
+                    ▼
+            Spring Boot API
+                    │
+                    ▼
+             ONNX Runtime
+                    │
+                    ▼
+              Modelo ONNX
+                    │
+                    ▼
+          Predicción energética
+````
+
+El Frontend consume la API REST y el backend utiliza el modelo ONNX para realizar las predicciones.
 
 ---
 
-# 🚀 Tecnologías utilizadas
+## 🛠️ Tecnologías
 
-## Ciencia de Datos
+### Ciencia de Datos
 
-- Python 3.12
-- Pandas
-- NumPy
-- Scikit-Learn
-- ONNX
-- ONNX Runtime
-- Joblib
+* Python 3.12
+* Pandas
+* NumPy
+* Scikit-Learn
+* ONNX
+* ONNX Runtime
+* Joblib
 
-## Backend
+### Backend
 
-- Java 17
-- Spring Boot
-- Maven
-- ONNX Runtime Java
-- OpenAPI (Swagger)
+* Java 25
+* Spring Boot
+* Maven
+* ONNX Runtime Java
+* OpenAPI / Swagger
 
-## Frontend
+### Frontend
 
-- JavaScript
-- HTML5
-- CSS3
+* JavaScript
+* HTML5
+* CSS3
 
-*(La implementación del Frontend se encuentra en desarrollo.)*
+> El Frontend se encuentra en proceso de integración con la API.
 
 ---
 
-# 📂 Estructura del proyecto
+## 📂 Estructura principal
 
-```
-EnergiAI/
-
+```text
+G9-LATAM-Team-51/
+│
 ├── data/
 │   └── processed/
 │
@@ -95,101 +104,171 @@ EnergiAI/
 ├── scripts/
 │
 ├── backend_V1.0/
+│   ├── src/
+│   ├── pom.xml
+│   └── mvnw
 │
 └── README.md
 ```
 
----
-
-# 🔄 Flujo general
-
-1. Limpieza de datos.
-2. Ingeniería de características.
-3. Entrenamiento del modelo.
-4. Evaluación del modelo.
-5. Exportación a formato ONNX.
-6. Integración del modelo en Spring Boot.
-7. Exposición mediante API REST.
-8. Consumo desde el Frontend.
+La estructura puede evolucionar durante el desarrollo del proyecto.
 
 ---
 
-# 🤖 Modelo de Inteligencia Artificial
+## 🔄 Flujo del sistema
 
-Modelo seleccionado:
-
-- Regresión Logística
-
-Variables de entrada:
-
-- consumo_kwh
-- uso_horario_pico
-- cantidad_equipos
-- tipo_inmueble
-- horas_alto_consumo
-
-Salida:
-
-- Categoría energética
-- Probabilidad por categoría
-
-Categorías:
-
-- Eficiente
-- Moderado
-- Ineficiente
-
----
-
-# 📊 Resultados
-
-Durante las pruebas finales del modelo se obtuvo:
-
-- Accuracy: 94.35 %
-- F1 Macro: 94.42 %
-
-Estos resultados fueron posteriormente validados utilizando ONNX Runtime para asegurar que las predicciones del modelo exportado fueran equivalentes a las obtenidas durante el entrenamiento.
-
----
-
-# 🔌 API REST
-
-El Backend expone endpoints para:
-
-- análisis individual mediante JSON
-- análisis masivo mediante CSV
-
-La documentación completa de la API se encuentra disponible en:
-
-```
-docs/backend_api.md
+```text
+Datos de entrada
+      │
+      ▼
+Procesamiento de datos
+      │
+      ▼
+Entrenamiento del modelo
+      │
+      ▼
+Exportación a ONNX
+      │
+      ▼
+Integración con Spring Boot
+      │
+      ▼
+API REST
+      │
+      ▼
+Frontend
+      │
+      ▼
+Resultado para el usuario
 ```
 
 ---
 
-# 📚 Documentación
+## 🤖 Modelo de Inteligencia Artificial - Regresión Logística
 
-La documentación del proyecto se organiza de la siguiente manera:
+El modelo utilizado actualmente es un clasificador basado en **Regresión Logística**.
 
-| Documento | Descripción |
-|------------|-------------|
-| README.md | Descripción general del proyecto |
-| architecture.md | Arquitectura del sistema |
-| data_science.md | Metodología de Ciencia de Datos |
-| backend_api.md | Documentación de la API |
-| model.md | Modelo de Machine Learning |
-| deployment.md | Despliegue |
-| user_manual.md | Manual de usuario |
-| technical_manual.md | Manual técnico |
+### Variables de entrada
 
----
+La API recibe cinco variables principales:
 
-# 👥 Equipo
+| Variable           | Descripción                               |
+| ------------------ | ----------------------------------------- |
+| `consumoKwh`       | Consumo energético                        |
+| `usoHorarioPico`   | Indica si existe uso durante horario pico |
+| `cantidadEquipos`  | Cantidad de equipos eléctricos            |
+| `tipoInmueble`     | Tipo de vivienda                          |
+| `horasAltoConsumo` | Horas de alto consumo                     |
 
-Proyecto desarrollado por el Grupo 9 del programa LATAM.
+El modelo genera una categoría energética y las probabilidades asociadas a cada clase.
 
 ---
 
-# 📄 Licencia
+## 🔌 API REST
 
-Este proyecto fue desarrollado con fines académicos.
+El backend expone actualmente dos operaciones principales:
+
+### Análisis individual
+
+```text
+POST /api/analisis-energetico
+```
+
+Permite enviar los datos de una vivienda mediante JSON.
+
+### Análisis mediante CSV
+
+```text
+POST /api/analisis-energetico/csv
+```
+
+Permite procesar múltiples registros mediante un archivo CSV.
+
+La referencia completa de requests, responses y formatos aceptados se encuentra en:
+
+`docs/API_REFERENCE.md`
+
+---
+
+## 💰 Información adicional
+
+Además de la clasificación energética, el backend calcula un costo estimado mensual a partir del consumo recibido.
+
+La respuesta también puede incluir:
+
+* Categoría energética.
+* Probabilidad de la categoría.
+* Probabilidades por clase.
+* Recomendaciones.
+* Costo estimado mensual.
+
+---
+
+## 🚀 Ejecución del proyecto
+
+La ejecución local del backend y el despliegue en Oracle Cloud Infrastructure (OCI) se encuentran documentados en:
+
+`docs/DEPLOYMENT.md`
+
+---
+
+## 🧪 Pruebas
+
+Las instrucciones para ejecutar y validar las pruebas de la API y del modelo se encuentran en:
+
+`docs/TESTING.md`
+
+---
+
+## 📚 Documentación
+
+La documentación técnica se encuentra en la carpeta `docs/`:
+
+| Documento                 | Descripción                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `API_REFERENCE.md`        | Endpoints, requests y responses principales de la API. |
+| `ARCHITECTURE.md`         | Arquitectura general y flujo de datos del sistema.     |
+| `DEPLOYMENT.md`           | Ejecución local y despliegue en OCI.                   |
+| `TESTING.md`              | Pruebas y validación de la API y del modelo.           |
+| `backend_onnx_handoff.md` | Integración entre el modelo ONNX y el backend.         |
+| `category_definition.md`  | Definición de las categorías de eficiencia energética. |
+| `model_training.md`       | Proceso de entrenamiento y evaluación del modelo.      |
+
+---
+
+## 📊 Resultados del modelo
+
+Durante la evaluación del modelo se obtuvieron los siguientes resultados:
+
+* **Accuracy:** 94.35 %
+* **F1 Macro:** 94.42 %
+
+La documentación relacionada con el entrenamiento y evaluación se encuentra en:
+
+`docs/model_training.md`
+
+---
+
+## ☁️ Despliegue
+
+El backend actual se encuentra preparado para su ejecución mediante Spring Boot y utiliza el modelo ONNX como recurso de la aplicación.
+
+El despliegue del backend se realiza en **Oracle Cloud Infrastructure (OCI)**.
+
+Para conocer los pasos de ejecución y despliegue:
+
+`docs/DEPLOYMENT.md`
+
+---
+
+## 👥 Equipo
+
+Proyecto desarrollado por el **Grupo 9 – LATAM**.
+
+---
+
+## 📄 Licencia
+
+Proyecto desarrollado con fines académicos.
+
+```
