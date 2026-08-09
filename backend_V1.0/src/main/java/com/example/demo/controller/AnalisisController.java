@@ -19,6 +19,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@CrossOrigin(
+        origins = "*",
+        allowedHeaders = "*",
+        methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.OPTIONS, RequestMethod.PUT, RequestMethod.DELETE}
+)
 public class AnalisisController {
 
     private final OnnxInferenceService inferenceService;
