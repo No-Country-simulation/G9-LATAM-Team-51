@@ -1,43 +1,22 @@
-'use strict';
-/*
-const express = require('express');
-const cors = require('cors');
-const app = express();
+"use strict";
 
-// Allow requests from your specific frontend origin
-app.use(cors({ origin: 'http://127.0.0.1:5500' }));
+// URL's de las API especificadas.
+const urlApiConsumo = "http://152.70.138.232:8080/api/analisis-energetico";
+const urlApiArchivo = "http://152.70.138.232:8080/api/analisis-energetico/csv";
 
-app.post('/api/analisis-energetico', (req, res) => {
-  res.json({ message: 'Success' });
-});
-*/
-function setErr(form, name, msg) {
-  var el = form.querySelector('[data-err="' + name + '"]');
-  if (el) el.textContent = msg || "";
-  var input = form.elements[name];
-  if (input) input.setAttribute("aria-invalid", msg ? "true" : "false");
-  return !msg;
-}
-function numeroValido(valor, opts) {
-  opts = opts || {};
-  var v = (valor || "").trim();
-  if (!v) return "Este campo es obligatorio.";
-  if (!/^\d+([.,]\d+)?$/.test(v)) return "Ingresa solo números positivos.";
-  var n = Number(v.replace(",", "."));
-  if (!isFinite(n)) return "Valor numérico inválido.";
-  if (opts.entero && !Number.isInteger(n)) return "Debe ser un número entero.";
-  if (opts.min != null && n < opts.min)
-    return "El valor mínimo es " + opts.min + ".";
-  if (opts.max != null && n > opts.max)
-    return "El valor máximo es " + opts.max + ".";
-  return "";
-}
-/////////////////////////////////////////////////////////////////
-///// Escucha del formulario de conumo fc = formulario de consumo 
-var fc = document.getElementById("form-consumo");
-fc.addEventListener("submit", async (e) => {
+// Elementos del DOM.
+const fc = document.getElementById("form-consumo"); // Fc = Formulario de consumo
+const fa = document.getElementById("form-archivo"); // Fc = Formulario de archivo
+let resultados = document.getElementById("resultados");
+
+// 1. Cargar historial de localStorage al iniciar la aplicación.
+document.addEventListener("DOMContentLoaded", displayHistorial);
+
+// 2. Escuchar el envío del formulario.
+fc.addEventListener("submit", async function (e) {
   e.preventDefault();
-  var ok = true;
+  // Validacion de datos del formulario.
+  let ok = true;
   ok =
     setErr(
       fc,
@@ -61,81 +40,146 @@ fc.addEventListener("submit", async (e) => {
       numeroValido(fc.elements["horasAltoConsumo"].value, { min: 0, max: 24 })
     ) && ok;
 
+  if (!ok) return;
+
+  // Mapeo y conversión de datos exactos requeridos por la API
+  const consumoData = {
+    consumoKwh: Number(document.getElementById("consumoKwh").value),
+    usoHorarioPico: document.getElementById("usoHorarioPico").value,
+    cantidadEquipos: Number(document.getElementById("cantidadEquipos").value),
+    tipoInmueble: document.getElementById("tipoInmueble").value,
+    horasAltoConsumo: document.getElementById("horasAltoConsumo").value,
+  };
+
   try {
-    const dataConsumo = {
-      consumoKwh: Number(document.getElementById("consumoKwh").value),
-      usoHorarioPico: document.getElementById("usoHorarioPico").value,
-      cantidadEquipos: Number(document.getElementById("cantidadEquipos").value),
-      tipoInmueble: document.getElementById("tipoInmueble").value,
-      horasAltoConsumo: Number(document.getElementById("horasAltoConsumo").value)
+    // categoria ,costoEstimadoMensual, probabilidad ,recomendaciones
 
-    };
-    // Enviar la consulta al serviddor 
-    const respuestaServidor = await enviarPeticionApi(dataConsumo);
+    // Realizar consumo de la API mediante POST
+    const apiResponse = await consumirApiAnalisis(consumoData);
 
+    // Guardar en el historial de localStorage
+    guardarEnLocalStorage(consumoData, apiResponse);
 
-    alert('Análisis energetico procesado con éxito.');
+    // Actualizar la vista del historial en pantalla.
+    displayHistorial();
+
+    // Limpiar campos del formulario.
+    fc.reset();
   } catch (error) {
-    console.error('Error en la API de análisis energetico:', error);
-    alert('No se pudo conectar con el servicio de análisis energetico. Revisa la consola. ');
+    console.error("Error al realizar la consulta:", error);
+    alert("Ocurrió un error al conectar con el servidor.");
   }
 });
-/*
-////////////////////////////////
-/////////////////7 prueba con otra API
 
-const apiUrl = "https://rickandmortyapi.com/api/character";
-
-async function getCharacter() {
-try {
- 
-const response = await fetch(apiUrl);
-const { results } = await response.json();
- 
-console.log(results);
- 
-} catch (error) {
-console.error(error.message);
- 
- 
+// Función para mostrar mensaje de error
+function setErr(form, name, msg) {
+  var el = form.querySelector('[data-err="' + name + '"]');
+  if (el) el.textContent = msg || "";
+  var input = form.elements[name];
+  if (input) input.setAttribute("aria-invalid", msg ? "true" : "false");
+  return !msg;
 }
 
+//Función para validar número
+function numeroValido(valor, opts) {
+  opts = opts || {};
+  var v = (valor || "").trim();
+  if (!v) return "Este campo es obligatorio.";
+  if (!/^\d+([.,]\d+)?$/.test(v)) return "Ingresa solo números positivos.";
+  var n = Number(v.replace(",", "."));
+  if (!isFinite(n)) return "Valor numérico inválido.";
+  if (opts.entero && !Number.isInteger(n)) return "Debe ser un número entero.";
+  if (opts.min != null && n < opts.min)
+    return "El valor mínimo es " + opts.min + ".";
+  if (opts.max != null && n > opts.max)
+    return "El valor máximo es " + opts.max + ".";
+  return "";
 }
 
-getCharacter();
-
-*/
-
-
-
-
-
-
-/////////////////////////////////////////////////
-///// Funcion fetch 
-async function enviarPeticionApi(datos) {
-  const URL_API = 'http://152.70.138.232:8080/api/analisis-energetico';
-  const respuesta = await fetch(URL_API, {
-    method: 'POST',
+// Función para enviar la petición POST a la API
+async function consumirApiAnalisis(datos) {
+  const response = await fetch(urlApiConsumo, {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': 'http://127.0.0.1:5500',
-      'Access-Control-Allow-Methods': 'POST',
-      Accept: 'application/json',
-      mode: "no-cors"
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST",
+      Accept: "application/json",
     },
-    body: JSON.stringify(datos)
+    body: JSON.stringify(datos),
   });
 
-  if (!respuesta.ok) throw new Error(`Error en el servidor: status ${respuesta.status}`);
+  if (!response.ok)
+    throw new Error(`Error en el solicitud: status ${respuesta.status}`);
 
-  return await respuesta.json();
+  return await response.json();
 }
 
+// Función para guardar datos de la consulta en localStorage
+function guardarEnLocalStorage(peticion, respuesta) {
+  const historial =
+    JSON.parse(localStorage.getItem("historialEnergetico")) || [];
+
+  const nuevoRegistro = {
+    id: Date.now(),
+    fecha: new Date().toLocaleDateString("es-ES"),
+    peticion,
+    respuesta,
+  };
+
+  historial.push(nuevoRegistro);
+  localStorage.setItem("historialEnergetico", JSON.stringify(historial));
+}
+
+// Función para renderizar los elementos almacenados en el contenedor  ul con id=containerMovements
+function displayHistorial() {
+  const historial =
+    JSON.parse(localStorage.getItem("historialEnergetico")) || [];
+  containerMovements.innerHTML = "";
+
+  if (historial.length === 0) {
+    resultados.textContent = `${historial.length} resultado`;
+    containerMovements.innerHTML = `
+      <li class="row">
+        <span class="">No hay consultas previas en el historial</span>
+      </li>`;
+    return;
+  } else resultados.textContent = `${historial.length} resultados `;
+
+  // Renderizar cada consulta almacenada
+  historial
+    .slice()
+    .reverse()
+    .forEach((item, index) => {
+      const html = `
+      <li class="row">
+        <span class="tag ${item.respuesta.categoria}">${
+        item.respuesta.categoria
+      }</span>
+        <span><span class="only-mobile">Probabilidad: </span>${
+          item.respuesta.probabilidad * 100
+        }%</span>
+        <span><span class="only-mobile">Clase: </span>${
+          item.respuesta.categoria
+        }</span>
+        <span><strong>${item.respuesta.costoEstimadoMensual}</strong></span>
+        <label><span class="only-mobile">Recomendaciones:</span>
+          <textarea
+            name="${item.respuesta.categoria}"
+            class="field"
+            rows="3"
+            readonly
+            aria-label="Recomendaciones categoría Ineficiente"
+          >${item.respuesta.recomendaciones}
+          </textarea>
+        </label>
+      </li>`;
+      containerMovements.insertAdjacentHTML("beforeend", html);
+    });
+}
 
 /////////////////////////////////////////////////////////////////
 ///// Escucha del formulario de archivo fa = formulario de archivo
-var fa = document.getElementById("form-archivo");
 function validarCsv() {
   var f = fa.elements["archivo"].files[0];
   if (!f) return "Selecciona un archivo CSV.";
