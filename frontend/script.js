@@ -12,7 +12,8 @@ let resultados = document.getElementById("resultados");
 let resultadosCsv = document.getElementById("resultadosCsv");
 
 // 1. Cargar historial de localStorage al iniciar la aplicación.
-document.addEventListener("DOMContentLoaded", displayHistorialCsv);
+let caja1 = document.addEventListener("DOMContentLoaded", displayHistorial);
+let caja2 = document.addEventListener("DOMContentLoaded", displayHistorialCsv);
 
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
