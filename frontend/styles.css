@@ -211,6 +211,10 @@ li.row:last-child {
   .only-mobile {
     display: none;
   }
+  .del {
+    position: static;
+    justify-self: end;
+  }
 }
 .tag {
   width: fit-content;
@@ -248,4 +252,27 @@ footer {
 }
 .field[aria-invalid="true"] {
   border-color: #c0392b;
+}
+.del {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(192, 57, 43, 0.45);
+  background: transparent;
+  color: #c0392b;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+}
+.del:hover {
+  transform: none;
+  background: #c0392b;
+  color: #fff;
 }
