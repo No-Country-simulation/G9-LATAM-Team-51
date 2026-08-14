@@ -26,7 +26,10 @@
             <p class="sub">Sostenibilidad · Energía</p>
           </div>
         </div>
-        <span class="pill">Sesión demo</span>
+        <button class="span2 pill" onclick="borrarHistorial()">
+          Borrar historial
+        </button>
+        <!-- <span class="pill">Sesión demo</span> -->
       </header>
 
       <section class="ops">
@@ -115,6 +118,7 @@
             <label
               >Archivo CSV<input
                 type="file"
+                id="archivoCsv"
                 name="archivo"
                 accept=".csv,text/csv"
                 required
@@ -142,7 +146,7 @@
       <section class="movements">
         <div class="section-head">
           <div>
-            <h2>Historial de consultas</h2>
+            <h2>Historial de consultas de consumo</h2>
             <p class="sub">Últimos análisis realizados</p>
           </div>
           <p class="sub" id="resultados">3 resultados</p>
@@ -153,8 +157,26 @@
             <span>Categoría</span><span>Probabilidad</span><span>Clase</span
             ><span>Costo</span><span>Recomendaciones</span>
           </div>
-          <!-- Contenedor del Historial (Renderizado desde JS) -->
+          <!-- Contenedor del Historial de consumo  (Renderizado desde JS) -->
           <ul id="containerMovements">
+            <!-- Las filas de las consultas se insertarán dinámicamente aquí -->
+          </ul>
+        </div>
+        <div class="section-head">
+          <div>
+            <h2>Historial de consultas por archivos</h2>
+            <p class="sub">Últimos análisis realizados</p>
+          </div>
+          <p class="sub" id="resultadosCsv">3 resultados</p>
+        </div>
+        <div class="surface-card" style="margin-top: 1rem">
+          <div class="thead">
+            <span>Categoría</span><span>Probabilidad</span><span>Clase</span
+            ><span>Costo</span><span>Recomendaciones</span>
+          </div>
+          <!-- Contenedor del Historial de archivo (Renderizado desde JS) -->
+
+          <ul id="containerMovementsCsv">
             <!-- Las filas de las consultas se insertarán dinámicamente aquí -->
           </ul>
         </div>
