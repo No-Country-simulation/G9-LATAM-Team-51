@@ -7,12 +7,16 @@ const urlApiArchivo = "http://152.70.138.232:8080/api/analisis-energetico/csv";
 // Elementos del DOM.
 const fc = document.getElementById("form-consumo"); // Fc = Formulario de consumo
 const fa = document.getElementById("form-archivo"); // Fc = Formulario de archivo
+const inputArchivoCsv = document.getElementById("archivoCsv");
 let resultados = document.getElementById("resultados");
+let resultadosCsv = document.getElementById("resultadosCsv");
 
 // 1. Cargar historial de localStorage al iniciar la aplicación.
-document.addEventListener("DOMContentLoaded", displayHistorial);
+document.addEventListener("DOMContentLoaded", displayHistorialCsv);
 
-// 2. Escuchar el envío del formulario.
+/////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+// 2. Escuchar el envío del formulario de consumo .
 fc.addEventListener("submit", async function (e) {
   e.preventDefault();
   // Validacion de datos del formulario.
@@ -71,7 +75,7 @@ fc.addEventListener("submit", async function (e) {
   }
 });
 
-// Función para mostrar mensaje de error
+// Función para mostrar mensaje de error en el formulario de consumo
 function setErr(form, name, msg) {
   var el = form.querySelector('[data-err="' + name + '"]');
   if (el) el.textContent = msg || "";
@@ -80,7 +84,7 @@ function setErr(form, name, msg) {
   return !msg;
 }
 
-//Función para validar número
+//Función para validar número en el formulario de consumo
 function numeroValido(valor, opts) {
   opts = opts || {};
   var v = (valor || "").trim();
@@ -121,11 +125,12 @@ function guardarEnLocalStorage(peticion, respuesta) {
     JSON.parse(localStorage.getItem("historialEnergetico")) || [];
 
   const nuevoRegistro = {
-    id: Date.now(),
+    id: Date.now() + Math.random(),
     fecha: new Date().toLocaleDateString("es-ES"),
     peticion,
     respuesta,
   };
+  console.log(peticion, respuesta);
 
   historial.push(nuevoRegistro);
   localStorage.setItem("historialEnergetico", JSON.stringify(historial));
@@ -138,29 +143,37 @@ function displayHistorial() {
   containerMovements.innerHTML = "";
 
   if (historial.length === 0) {
-    resultados.textContent = `${historial.length} resultado`;
+    resultados.textContent = `${historial.length} resultados`;
     containerMovements.innerHTML = `
       <li class="row">
         <span class="">No hay consultas previas en el historial</span>
       </li>`;
     return;
-  } else resultados.textContent = `${historial.length} resultados `;
+  } else
+    historial.length === 1
+      ? (resultados.textContent = `${historial.length} resultado `)
+      : (resultados.textContent = `${historial.length} resultados `);
 
-  // Renderizar cada consulta almacenada
+  // Renderizar las filas de resultados en orden inverso (más recientes primero)
   historial
     .slice()
     .reverse()
     .forEach((item, index) => {
+      let categoria = item.respuesta.categoria;
       const html = `
       <li class="row">
         <span class="tag ${item.respuesta.categoria}">${
         item.respuesta.categoria
       }</span>
         <span><span class="only-mobile">Probabilidad: </span>${
-          item.respuesta.probabilidad * 100
+          item.respuesta.probabilidad
         }%</span>
         <span><span class="only-mobile">Clase: </span>${
-          item.respuesta.categoria
+          categoria === "Ineficiente"
+            ? "Alta"
+            : categoria === "Moderado"
+            ? "Media"
+            : "Baja"
         }</span>
         <span><strong>${item.respuesta.costoEstimadoMensual}</strong></span>
         <label><span class="only-mobile">Recomendaciones:</span>
@@ -173,13 +186,160 @@ function displayHistorial() {
           >${item.respuesta.recomendaciones}
           </textarea>
         </label>
+        <button class="del" type="button" title="Eliminar consulta"  data-id='${
+          item.id
+        }">×</button>
       </li>`;
       containerMovements.insertAdjacentHTML("beforeend", html);
     });
 }
 
-/////////////////////////////////////////////////////////////////
-///// Escucha del formulario de archivo fa = formulario de archivo
+/////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+/// Escucha del formulario de archivo fa = formulario de archivo
+
+fa.addEventListener("submit", async function (e) {
+  e.preventDefault();
+  const ok = setErr(fa, "archivo", validarCsv());
+  // ok =
+  //   setErr(
+  //     fa,
+  //     "periodo",
+  //     numeroValido(fa.elements["periodo"].value, {
+  //       entero: true,
+  //       min: 1,
+  //       max: 120,
+  //     })
+  //   ) && ok;
+
+  const archivo = inputArchivoCsv.files[0];
+
+  // 1. Crear el objeto FormData y adjuntar el archivo
+  // Nota: El primer parámetro ('file' o 'archivo') debe coincidir con el nombre
+  // del parámetro que espera la API en el backend (ej: @RequestParam("file"))
+
+  const formData = new FormData();
+  formData.append("file", archivo);
+
+  try {
+    // 2. Enviar la petición a la API
+    const respuestaApi = await consumirApiCsv(formData);
+
+    // 3. Almacenar los resultados devueltos por la API en el historial de localStorage
+    guardarEnLocalStorageCsv(respuestaApi, archivo.name);
+
+    // 4. Actualizar la interfaz del historial y reiniciar el formulario
+    displayHistorialCsv();
+
+    alert(
+      `Procesado exitosamente. Se analizaron ${respuestaApi.totalRecords} registros.`
+    );
+  } catch (error) {
+    console.error("Error al subir el archivo CSV:", error);
+    alert("Ocurrió un error al procesar el archivo CSV.");
+  }
+});
+
+// Función para enviar FormData a la API mediante fetch
+async function consumirApiCsv(formData) {
+  const response = await fetch(urlApiArchivo, {
+    method: "POST",
+    // IMPORTANTE: Al enviar FormData, NO se debe definir 'Content-Type'.
+    // El navegador asignará 'multipart/form-data' automáticamente.
+    body: formData,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error en la solicitud: status ${response.status}`);
+  }
+
+  return await response.json();
+}
+
+// Función para guardar cada resultado individual de la lista 'results' en localStorage
+function guardarEnLocalStorageCsv(dataApi, nombreArchivo) {
+  const historial =
+    JSON.parse(localStorage.getItem("historialEnergeticoCsv")) || [];
+
+  // Iterar por cada resultado retornado en el arreglo "results"
+  dataApi.results.forEach((item) => {
+    const nuevoRegistro = {
+      id: Date.now() + Math.random(),
+      fecha: new Date().toLocaleDateString("es-ES"),
+      origen: `CSV (${nombreArchivo})`,
+      categoria: item.categoria,
+      probabilidad: (item.probabilidad * 100).toFixed(2) + "%",
+      costo: `${item.costoEstimadoMensual.toFixed(2)}`,
+      recomendaciones: item.recomendaciones
+        ? item.recomendaciones.join(" | ")
+        : "Sin recomendaciones",
+    };
+
+    historial.push(nuevoRegistro);
+    console.log(historial);
+  });
+
+  localStorage.setItem("historialEnergeticoCsv", JSON.stringify(historial));
+}
+
+// Función para renderizar los elementos almacenados en el contenedor  ul con id=containerMovementsCsv
+function displayHistorialCsv() {
+  const historial =
+    JSON.parse(localStorage.getItem("historialEnergeticoCsv")) || [];
+  containerMovementsCsv.innerHTML = "";
+
+  if (historial.length === 0) {
+    resultadosCsv.textContent = `${historial.length} resultados`;
+    containerMovementsCsv.innerHTML = `
+    <li class="row">
+    <span class="">No hay archivos previos en el historial</span>
+  </li>`;
+    return;
+  } else
+    historial.length === 1
+      ? (resultadosCsv.textContent = `${historial.length} resultado `)
+      : (resultadosCsv.textContent = `${historial.length} resultados `);
+
+  // Renderizar las filas de resultados en orden inverso (más recientes primero)
+  historial
+    .slice()
+    .reverse()
+    .forEach((item) => {
+      let categoria = item.categoria;
+      const html = `
+      <li class="row">
+        <span class="tag ${item.categoria}">${item.categoria}</span>
+        <span><span class="only-mobile">Probabilidad: </span>${
+          item.probabilidad
+        }</span>
+        <span><span class="only-mobile">Clase: </span>${
+          categoria === "Ineficiente"
+            ? "Alta"
+            : categoria === "Moderado"
+            ? "Media"
+            : "Baja"
+        }</span>
+        <span><strong>${item.costo}</strong></span>
+        <label><span class="only-mobile">Recomendaciones:</span>
+          <textarea
+            name="${item.categoria}"
+            class="field"
+            rows="3"
+            readonly
+            aria-label="Recomendaciones categoría Ineficiente"
+          >${item.recomendaciones}
+          </textarea>
+        </label>
+        <button class="del" type="button" title="Eliminar consulta"  data-id='${
+          item.id
+        }">×</button>
+      </li>`;
+      containerMovementsCsv.insertAdjacentHTML("beforeend", html);
+    });
+}
+
+// Función para validar archivo CSV
+
 function validarCsv() {
   var f = fa.elements["archivo"].files[0];
   if (!f) return "Selecciona un archivo CSV.";
@@ -194,17 +354,12 @@ fa.elements["archivo"].addEventListener("change", function () {
     fa.elements["archivo"].value = "";
   setErr(fa, "archivo", msg === "Selecciona un archivo CSV." ? "" : msg);
 });
-fa.addEventListener("submit", function (e) {
-  e.preventDefault();
-  var ok = setErr(fa, "archivo", validarCsv());
-  ok =
-    setErr(
-      fa,
-      "periodo",
-      numeroValido(fa.elements["periodo"].value, {
-        entero: true,
-        min: 1,
-        max: 120,
-      })
-    ) && ok;
-});
+///////////////////////////////
+///////////////////////////////
+//funcion para borrar historial
+
+function borrarHistorial() {
+  localStorage.clear();
+  displayHistorial();
+  displayHistorialCsv();
+}
