@@ -69,7 +69,7 @@ El Frontend consume la API REST y el backend utiliza el modelo ONNX para realiza
 
 ### Backend
 
-* Java 25
+* Java 21 (LTS)
 * Spring Boot
 * Maven
 * ONNX Runtime Java
@@ -90,23 +90,20 @@ El Frontend consume la API REST y el backend utiliza el modelo ONNX para realiza
 ```text
 G9-LATAM-Team-51/
 │
-├── data/
-│   └── processed/
+├── backend/
+│   ├── src/main/java/          # Lógica de la API, controladores y servicios
+│   ├── src/main/resources/     # Configuración y modelo .onnx empaquetado
+│   ├── pom.xml                 # Dependencias y configuración de Maven
+│   └── mvnw                    # Wrapper de Maven
+|
+├── data-science/               # Notebooks, datasets y scripts de entrenamiento
+|
+├── docs/                       # Documentación técnica y guías detalladas
 │
-├── docs/
-│
-├── models/
-│
-├── notebooks/
-│
-├── reports/
-│
-├── scripts/
-│
-├── backend_V1.0/
-│   ├── src/
-│   ├── pom.xml
-│   └── mvnw
+├── frontend/
+│   ├── index.html              # Interfaz de usuario
+│   ├── script.js               # Lógica del cliente y consumo de API
+│   └── styles.css              # Estilos visuales
 │
 └── README.md
 ```
@@ -152,13 +149,13 @@ El modelo utilizado actualmente es un clasificador basado en **Regresión Logís
 
 La API recibe cinco variables principales:
 
-| Variable           | Descripción                               |
-| ------------------ | ----------------------------------------- |
-| `consumoKwh`       | Consumo energético                        |
-| `usoHorarioPico`   | Indica si existe uso durante horario pico |
-| `cantidadEquipos`  | Cantidad de equipos eléctricos            |
-| `tipoInmueble`     | Tipo de vivienda                          |
-| `horasAltoConsumo` | Horas de alto consumo                     |
+| Variable           | Tipo     | Descripción                                 |
+| ------------------ | -------- | ------------------------------------------- |
+| `consumoKwh`       | Double   | Consumo energético en kWh                   |
+| `usoHorarioPico`   | Boolean  | `true` si usa energía durante horario pico  |
+| `cantidadEquipos`  | Integer  | Cantidad total de electrodomésticos         |
+| `tipoInmueble`     | String   | Exclusivamente: `"Casa"` o `"Departamento"` |
+| `horasAltoConsumo` | Integer  | Horas de uso intensivo al día               |
 
 El modelo genera una categoría energética y las probabilidades asociadas a cada clase.
 
@@ -227,11 +224,14 @@ La documentación técnica se encuentra en la carpeta `docs/`:
 | Documento                 | Descripción                                            |
 | ------------------------- | ------------------------------------------------------ |
 | `API_REFERENCE.md`        | Endpoints, requests y responses principales de la API. |
-| `ARCHITECTURE.md`         | Arquitectura general y flujo de datos del sistema.     |
+| `CHANGELOG.md`            | Registro de cambios y versiones.                       |
+| `CONTRIBUTING.md`         | Pautas de contribución y ramas.                        |
 | `DEPLOYMENT.md`           | Ejecución local y despliegue en OCI.                   |
 | `TESTING.md`              | Pruebas y validación de la API y del modelo.           |
+| `arquitecture.md`         | Arquitectura general y flujo de datos del sistema.     |
 | `backend_onnx_handoff.md` | Integración entre el modelo ONNX y el backend.         |
 | `category_definition.md`  | Definición de las categorías de eficiencia energética. |
+| `git_workflow.md`         | Flujo de trabajo de Git.                               |
 | `model_training.md`       | Proceso de entrenamiento y evaluación del modelo.      |
 
 ---
