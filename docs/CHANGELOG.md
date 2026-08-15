@@ -6,6 +6,22 @@ El formato está inspirado en **Keep a Changelog** y sigue principios de version
 
 ---
 
+## [1.0.1] - 2026-08
+
+### Changed
+
+#### Backend
+- Reorganización de la estructura de `backend`.
+- Actualización del contrato de entrada de la API.
+- Endpoint principal disponible bajo `/api/analisis-energetico`.
+- Incorporación del endpoint `/api/analisis-energetico/csv`.
+- Actualización de la respuesta de análisis con probabilidades por clase, recomendaciones y costo estimado.
+- Carga del modelo ONNX desde los recursos del classpath mediante `ClassPathResource`.
+- Ajustes para el despliegue de la aplicación con el modelo ONNX incluido como recurso.
+- Configuración de CORS para permitir solicitudes cross-origin desde el Frontend.
+
+---
+
 ## [1.0.0] - 2026-07
 
 ### Added
@@ -97,17 +113,5 @@ Planeado:
 | 0.1.0 | Inicio del proyecto |
 | 0.5.0 | Primera integración |
 | 1.0.0 | Integración completa Data Science + Backend |
+| 1.0.1 | Actualización Backend |
 | 1.1.0 | Despliegue e integración Frontend (planeado) |
-
-## [1.0.1] - 2026-08
-
-### Changed
-
-#### Backend
-- Reorganización de la estructura de `backend_V1.0`.
-- Actualización del contrato de entrada de la API.
-- Endpoint principal disponible bajo `/api/analisis-energetico`.
-- Incorporación del endpoint `/api/analisis-energetico/csv`.
-- Actualización de la respuesta de análisis con probabilidades por clase, recomendaciones y costo estimado.
-- Carga del modelo ONNX desde los recursos del classpath mediante `ClassPathResource`.
-- Ajustes para el despliegue de la aplicación con el modelo ONNX incluido como recurso.
