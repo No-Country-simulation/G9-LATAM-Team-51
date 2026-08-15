@@ -8,7 +8,7 @@ Guía breve para ejecutar el backend localmente y entender el proceso de desplie
 
 Para ejecutar el backend localmente se necesita:
 
-- Java 25
+- Java 21 (LTS)
 - Maven
 - Git
 - Acceso al repositorio del proyecto
@@ -27,7 +27,7 @@ El backend utiliza:
 El backend se encuentra en:
 
 ```text
-backend_V1.0/
+backend/
 ├── pom.xml
 ├── mvnw
 ├── mvnw.cmd
@@ -59,7 +59,7 @@ src/main/resources/models/
 Ingresar a la carpeta del backend:
 
 ```bash
-cd backend_V1.0
+cd backend
 ```
 
 ### Windows
@@ -86,10 +86,10 @@ Si la aplicación inicia correctamente, Spring Boot levantará el servidor y mos
 
 ## 4. Verificación de la API
 
-El backend expone sus endpoints bajo:
+El backend expone sus endpoints bajo el puerto `8080` con el prefijo:
 
 ```text
-/api
+http://localhost:8080/api
 ```
 
 El endpoint principal de análisis es:
@@ -148,7 +148,7 @@ Antes de desplegar una nueva versión se recomienda:
 
 ### Local
 
-* [ ] Java 25 instalado
+* [ ] Java 21 (LTS) instalado
 * [ ] Proyecto actualizado
 * [ ] Modelo ONNX presente
 * [ ] Dependencias descargadas
@@ -209,7 +209,7 @@ En particular:
 ## 8. Referencias
 
 * `API_REFERENCE.md` — endpoints y formatos de entrada/salida.
-* `ARCHITECTURE.md` — arquitectura y flujo de datos.
+* `architecture.md` — arquitectura y flujo de datos.
 * `TESTING.md` — pruebas y validación.
 
 ```
