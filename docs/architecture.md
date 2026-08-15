@@ -77,19 +77,27 @@ El backend está desarrollado con:
 Su estructura principal es:
 
 ```text
-backend_V1.0/
-└── src/
-    └── main/
-        ├── java/
-        │   └── com/example/demo/
-        │       ├── controller/
-        │       ├── dto/
-        │       ├── exception/
-        │       └── service/
-        │
-        └── resources/
-            └── models/
-                └── energy_efficiency_classifier_v1.onnx
+backend/
+├── .mvn/wrapper/
+├── src/
+│   ├── main/
+│   │   ├── java/com/example/demo/
+│   │   │   ├── controller/
+│   │   │   ├── dto/
+│   │   │   ├── exception/
+│   │   │   ├── service/
+│   │   │   └── DemoApplication.java
+│   │   └── resources/
+│   │       ├── models/
+│   │       │   └── energy_efficiency_classifier_v1.onnx
+│   │       └── application.properties
+│   └── test/
+│       └── java/com/example/demo/
+│           └── DemoApplicationTests.java
+├── .gitignore
+├── mvnw
+├── mvnw.cmd
+└── pom.xml
 ```
 
 ### Responsabilidad de cada capa
@@ -97,15 +105,15 @@ backend_V1.0/
 ```text
 Controller
     │
-    │ recibe HTTP
+    │ recibe peticiones HTTP, gestiona política de CORS (`@CrossOrigin`) y delega ejecución al servicio
     ▼
 DTO
     │
-    │ representa los datos
+    │ representa y valida estructura de datos de entrada y salida
     ▼
 Service
     │
-    │ valida + prepara entrada
+    │ valida rangos numéricos, prepara tensores y ejecuta inferencia en ONNX Runtime
     ▼
 ONNX Runtime
     │
@@ -199,13 +207,13 @@ energy_efficiency_classifier_v1.onnx
 
 El modelo recibe cinco variables:
 
-| Variable           | Tipo           |
-| ------------------ | -------------- |
-| `consumoKwh`       | número decimal |
-| `usoHorarioPico`   | booleano       |
-| `cantidadEquipos`  | entero         |
-| `tipoInmueble`     | texto          |
-| `horasAltoConsumo` | entero         |
+| Variable           | Tipo      | Valores / Restricción                       |
+| ------------------ | --------- | ------------------------------------------- |
+| `consumoKwh`       | Double    | Valor numérico positivo                     |
+| `usoHorarioPico`   | Boolean   | `true` / `false`                            |
+| `cantidadEquipos`  | Integer   | Cantidad de equipos                         |
+| `tipoInmueble`     | String    | Exclusivamente: `"Casa"` o `"Departamento"` |
+| `horasAltoConsumo` | Integer   | Horas diarias                               |
 
 Las categorías posibles son:
 
