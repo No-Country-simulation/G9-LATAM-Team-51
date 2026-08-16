@@ -11,10 +11,10 @@ Este documento describe el flujo de trabajo recomendado para mantener un desarro
 El repositorio está dividido en tres áreas principales:
 
 ```
-backend_V1.0/
+backend/
     └── API Spring Boot + ONNX
 
-DataScience/
+data-science/
     └── Preparación de datos, entrenamiento y modelos
 
 frontend/
