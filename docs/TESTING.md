@@ -13,7 +13,7 @@ Actualmente el proyecto cuenta con una prueba básica de contexto de Spring Boot
 La prueba se encuentra en:
 
 ```text
-backend_V1.0/src/test/java/com/example/demo/DemoApplicationTests.java
+backend/src/test/java/com/example/demo/DemoApplicationTests.java
 ````
 
 Actualmente verifica que el contexto de la aplicación pueda cargarse correctamente.
