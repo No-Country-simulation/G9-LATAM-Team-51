@@ -226,24 +226,3 @@ src/main/resources/models/
 
 La documentación debe mantenerse sincronizada con cualquier cambio en los endpoints, DTOs o estructura de respuesta del backend.
 
-```
-
-### ¿Por qué lo dejaría así?
-
-Porque para el equipo **esto ya cubre lo realmente necesario**:
-
-- qué endpoint existe;
-- qué método HTTP usa;
-- qué debe mandar el frontend;
-- nombres y tipos de los campos;
-- ejemplo realista de request;
-- estructura de response;
-- endpoint CSV;
-- errores;
-- validaciones;
-- flujo general.
-
-Y, muy importante, está basado en el `backend1.0` que me acabas de pasar, no en la versión anterior.
-
-**Una pequeña precaución:** el `0.9968` del ejemplo es ilustrativo. Si quieres que la documentación no sugiera un resultado específico del modelo, podemos usar valores de ejemplo genéricos como `0.99`.
-```
