@@ -276,3 +276,32 @@ footer {
   background: #c0392b;
   color: #fff;
 }
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem;
+  margin-top: 1rem;
+}
+.tabs button {
+  flex: 1;
+  background: transparent;
+  color: var(--muted-foreground);
+  border-radius: 999px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+}
+.tabs button:hover {
+  transform: none;
+  background: color-mix(in oklab, var(--brand) 12%, transparent);
+}
+.tabs button[aria-selected="true"] {
+  background: var(--brand);
+  color: var(--brand-foreground);
+}
+/* Lógica de visibilidad para los paneles */
+[role="tabpanel"][hidden] {
+  display: none;
+}
