@@ -76,7 +76,7 @@ fc.addEventListener("submit", async function (e) {
   }
 });
 
-// Función para mostrar mensaje de error en el formulario de consumo
+// Función para mostrar mensaje de error
 function setErr(form, name, msg) {
   var el = form.querySelector('[data-err="' + name + '"]');
   if (el) el.textContent = msg || "";
@@ -161,22 +161,25 @@ function displayHistorial() {
     .reverse()
     .forEach((item, index) => {
       let categoria = item.respuesta.categoria;
+      let horas = item.peticion.horasAltoConsumo;
       const html = `
       <li class="row">
         <span class="tag ${item.respuesta.categoria}">${
         item.respuesta.categoria
       }</span>
         <span><span class="only-mobile">Probabilidad: </span>${
-          item.respuesta.probabilidad
-        }%</span>
-        <span><span class="only-mobile">Clase: </span>${
-          categoria === "Ineficiente"
-            ? "Alta"
-            : categoria === "Moderado"
-            ? "Media"
-            : "Baja"
+          (item.respuesta.probabilidad * 100).toFixed(2) + "%"
         }</span>
-        <span><strong>${item.respuesta.costoEstimadoMensual}</strong></span>
+        <span><span class="only-mobile">Consumo: </span>${
+          categoria === "Ineficiente"
+            ? "Alto"
+            : categoria === "Moderado"
+            ? "Medio"
+            : "Bajo"
+        }</span>
+        <span><strong>${
+          item.respuesta.costoEstimadoMensual.toFixed(2) + "$"
+        }</strong></span>
         <label><span class="only-mobile">Recomendaciones:</span>
           <textarea
             name="${item.respuesta.categoria}"
@@ -187,9 +190,11 @@ function displayHistorial() {
           >${item.respuesta.recomendaciones}
           </textarea>
         </label>
-        <button class="del" type="button" title="Eliminar consulta"  data-id='${
-          item.id
-        }">×</button>
+        <p class="sub">Consumo (kWh): ${item.peticion.consumoKwh}</p>
+        <p class="sub">Equipos: ${item.peticion.cantidadEquipos} </p>
+        <p class="sub">Horario punta: ${horas === "true" ? "Si" : "No"} </p>
+        <p class="sub">Horas de consumo: ${item.peticion.horasAltoConsumo}</p>
+        <p class="sub">Tipo de inmueble: ${item.peticion.tipoInmueble}</p>
       </li>`;
       containerMovements.insertAdjacentHTML("beforeend", html);
     });
@@ -212,6 +217,7 @@ fa.addEventListener("submit", async function (e) {
   //       max: 120,
   //     })
   //   ) && ok;
+  if (!ok) return;
 
   const archivo = inputArchivoCsv.files[0];
 
@@ -232,9 +238,8 @@ fa.addEventListener("submit", async function (e) {
     // 4. Actualizar la interfaz del historial y reiniciar el formulario
     displayHistorialCsv();
 
-    alert(
-      `Procesado exitosamente. Se analizaron ${respuestaApi.totalRecords} registros.`
-    );
+    // Limpiar campos del formulario
+    fa.reset();
   } catch (error) {
     console.error("Error al subir el archivo CSV:", error);
     alert("Ocurrió un error al procesar el archivo CSV.");
@@ -257,7 +262,7 @@ async function consumirApiCsv(formData) {
   return await response.json();
 }
 
-// Función para guardar cada resultado individual de la lista 'results' en localStorage
+// Función para guardar cada resultado individual de la lista 'results' en localStorage del archivo.
 function guardarEnLocalStorageCsv(dataApi, nombreArchivo) {
   const historial =
     JSON.parse(localStorage.getItem("historialEnergeticoCsv")) || [];
@@ -313,12 +318,12 @@ function displayHistorialCsv() {
         <span><span class="only-mobile">Probabilidad: </span>${
           item.probabilidad
         }</span>
-        <span><span class="only-mobile">Clase: </span>${
+        <span><span class="only-mobile">Consumo: </span>${
           categoria === "Ineficiente"
-            ? "Alta"
+            ? "Alto"
             : categoria === "Moderado"
-            ? "Media"
-            : "Baja"
+            ? "Medio"
+            : "Bajo"
         }</span>
         <span><strong>${item.costo}</strong></span>
         <label><span class="only-mobile">Recomendaciones:</span>
@@ -331,9 +336,6 @@ function displayHistorialCsv() {
           >${item.recomendaciones}
           </textarea>
         </label>
-        <button class="del" type="button" title="Eliminar consulta"  data-id='${
-          item.id
-        }">×</button>
       </li>`;
       containerMovementsCsv.insertAdjacentHTML("beforeend", html);
     });
@@ -364,3 +366,32 @@ function borrarHistorial() {
   displayHistorial();
   displayHistorialCsv();
 }
+/*
+function mostrarPestana() {
+  //Selecciona todas las pentañas
+  const tabs = document.querySelectorAll('[role="tab"]');
+  const panels = document.querySelectorAll('[role="tabpanel"]');
+
+  tabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      // 1. Deseleccionar todas las pestañas y bloquear su foco con teclado
+      tabs.forEach((t) => {
+        t.setAttribute("aria-selected", "false");
+        t.setAttribute("tabindex", "-1");
+      });
+
+      // 2. Ocultar todos los paneles de las tablas
+      panels.forEach((panel) => panel.setAttribute("hidden", ""));
+
+      // 3. Activar la pestaña actual
+      tab.setAttribute("aria-selected", "true");
+      tab.removeAttribute("tabindex");
+
+      // 4. Mostrar la tabla vinculada mediante el id en aria-controls
+      const targetPanelId = tab.getAttribute("aria-controls");
+      const targetPanel = document.getElementById(targetPanelId);
+      targetPanel.removeAttribute("hidden");
+    });
+  });
+}
+*/
