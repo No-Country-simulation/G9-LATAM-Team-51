@@ -178,7 +178,7 @@ function displayHistorial() {
             : "Bajo"
         }</span>
         <span><strong>${
-          item.respuesta.costoEstimadoMensual.toFixed(2) + "$"
+          "$" + item.respuesta.costoEstimadoMensual.toFixed(2)
         }</strong></span>
         <label><span class="only-mobile">Recomendaciones:</span>
           <textarea
@@ -325,7 +325,7 @@ function displayHistorialCsv() {
             ? "Medio"
             : "Bajo"
         }</span>
-        <span><strong>${item.costo}</strong></span>
+        <span><strong>$${item.costo}</strong></span>
         <label><span class="only-mobile">Recomendaciones:</span>
           <textarea
             name="${item.categoria}"
