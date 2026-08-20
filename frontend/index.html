@@ -104,7 +104,7 @@
                 class="field"
               >
                 <option value="Casa">Casa</option>
-                <option value="Departamento">Depto</option>
+                <option value="Departamento">Departamento</option>
               </select></label
             >
             <button class="span2" type="submit">Analizar consumo →</button>
@@ -124,6 +124,7 @@
                 required
                 class="field" /><span class="err" data-err="archivo"></span
             ></label>
+            <!--  
             <label
               >Periodo (meses)<input
                 type="number"
@@ -139,6 +140,7 @@
                 data-err="periodo"
               ></span
             ></label>
+            -->
             <button type="submit">Subir archivo →</button>
           </form>
         </article>
@@ -154,14 +156,12 @@
 
         <div class="surface-card" style="margin-top: 1rem">
           <div class="thead">
-            <span>Categoría</span><span>Probabilidad</span><span>Clase</span
+            <span>Categoría</span><span>Probabilidad</span><span>Consumo</span
             ><span>Costo</span><span>Recomendaciones</span>
           </div>
-          <!-- Contenedor del Historial de consumo  (Renderizado desde JS) -->
-          <ul id="containerMovements">
-            <!-- Las filas de las consultas se insertarán dinámicamente aquí -->
-          </ul>
+          <ul id="containerMovements"></ul>
         </div>
+
         <div class="section-head">
           <div>
             <h2>Historial de consultas por archivos</h2>
@@ -171,15 +171,66 @@
         </div>
         <div class="surface-card" style="margin-top: 1rem">
           <div class="thead">
-            <span>Categoría</span><span>Probabilidad</span><span>Clase</span
+            <span>Categoría</span><span>Probabilidad</span><span>Consumo</span
             ><span>Costo</span><span>Recomendaciones</span>
           </div>
-          <!-- Contenedor del Historial de archivo (Renderizado desde JS) -->
 
-          <ul id="containerMovementsCsv">
-            <!-- Las filas de las consultas se insertarán dinámicamente aquí -->
-          </ul>
+          <ul id="containerMovementsCsv"></ul>
         </div>
+
+        <!--  contenedor de pestañas 
+        <div class="tabs" role="tablist" aria-label="Ventanas del historial">
+          <button
+            onclick="mostrarPestana()"
+            aria-controls="tabla-consumo"
+            type="button"
+            role="tab"
+            data-tab="consumo"
+            aria-selected="true"
+          >
+            Consultas de consumo
+          </button>
+          <button
+            onclick="mostrarPestana()"
+            aria-controls="tabla-archivo"
+            type="button"
+            role="tab"
+            data-tab="archivo"
+            aria-selected="false"
+          >
+            Consultas por archivo
+          </button>
+        </div>
+         fin contenedor de pestañas -->
+
+        <!--  contenedor de tablas  
+        <div
+          class="surface-card"
+          role="tabpanel"
+          id="tabla-consumo"
+          style="margin-top: 1rem"
+        >
+          <div class="thead">
+            <span>Categoría</span><span>Probabilidad</span><span>Clase</span
+            ><span>Costo</span><span>Recomendaciones</span><span></span>
+          </div>
+          <ul id="containerMovements"></ul>
+        </div>
+
+        <div
+          class="surface-card"
+          role="tabpanel"
+          id="tabla-archivo"
+          style="margin-top: 1rem"
+          hidden
+        >
+          <div class="thead">
+            <span>Categoría</span><span>Probabilidad</span><span>Clase</span
+            ><span>Costo</span><span>Recomendaciones</span><span></span>
+          </div>
+          <ul id="containerMovementsCsv"></ul>
+        </div>
+        fin contenedor de tablas -->
       </section>
 
       <footer>© 2026 EnergiAI · Sostenibilidad · Energía</footer>
