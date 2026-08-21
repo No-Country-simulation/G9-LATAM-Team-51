@@ -1,0 +1,15 @@
+# Compilados e intermediarios
+target/
+*.class
+
+# Entorno local e IDEs
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+
+# Asegurar que el wrapper de Maven NO se ignore
+!.mvn/
+!mvnw
+!mvnw.cmd
